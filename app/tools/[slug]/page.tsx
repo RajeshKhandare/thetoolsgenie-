@@ -1,16 +1,52 @@
 import React from 'react';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ToolEngineRunner from '@/components/ToolEngineRunner';
 import { TOOLS_REGISTRY, ToolMeta } from '@/data/toolsRegistry';
-import { ShieldCheck, Cpu, BookOpen, ArrowRight, Zap } from 'lucide-react';
+import { ShieldCheck, Cpu, ArrowRight, Zap } from 'lucide-react';
 import Link from 'next/link';
 
 export async function generateStaticParams() {
   return TOOLS_REGISTRY.map((tool) => ({
     slug: tool.slug,
   }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const tool = TOOLS_REGISTRY.find((t) => t.slug === params.slug);
+
+  if (!tool) {
+    return {
+      title: 'Tool Not Found | TheToolsGenie',
+      description: 'The requested utility is not available.',
+    };
+  }
+
+  const title = `${tool.name} – Free Online Utility | TheToolsGenie`;
+  const description = `${tool.description} Fast, secure, and client-side executed in your browser.`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url: `https://thetoolsgenie-beta.vercel.app/tools/${tool.slug}`,
+      siteName: 'TheToolsGenie',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+  };
 }
 
 export default function ToolPage({ params }: { params: { slug: string } }) {
@@ -61,10 +97,10 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
         />
 
-        <main className="mx-auto max-w-5xl px-4 pt-10 pb-16 sm:px-6">
-          {/* Standalone Tool Hero */}
-          <div className="text-center max-w-3xl mx-auto mb-10">
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 dark:bg-zinc-900 px-3 py-1 text-xs font-semibold text-violet-700 dark:text-violet-400 border border-violet-200/60 dark:border-zinc-800 mb-4">
+        <main className="mx-auto max-w-5xl px-4 pt-8 sm:pt-10 pb-16 sm:px-6">
+          {/* Standalone Tool Hero - Compact Spacing */}
+          <div className="text-center max-w-3xl mx-auto mb-8">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 dark:bg-zinc-900 px-3 py-1 text-xs font-semibold text-violet-700 dark:text-violet-400 border border-violet-200/60 dark:border-zinc-800 mb-3">
               <Zap className="h-3.5 w-3.5 text-violet-600 dark:text-violet-400" />
               <span>{tool.badge} · Instant Local Execution</span>
             </div>
