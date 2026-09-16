@@ -27,14 +27,14 @@ export default function HomePage() {
 
   const getToolIcon = (cat: string) => {
     switch (cat) {
-      case 'PDF': return <FileText className="h-4 w-4 text-violet-600 dark:text-violet-400" />;
+      case 'PDF': return <FileText className="h-5 w-5 text-violet-600 dark:text-violet-400" />;
       case 'Image':
-      case 'Image Crop': return <ImageIcon className="h-4 w-4 text-pink-500 dark:text-pink-400" />;
+      case 'Image Crop': return <ImageIcon className="h-5 w-5 text-pink-500 dark:text-pink-400" />;
       case 'Compiler':
-      case 'Developer': return <Code className="h-4 w-4 text-emerald-500 dark:text-emerald-400" />;
-      case 'Finance': return <Calculator className="h-4 w-4 text-indigo-500 dark:text-indigo-400" />;
-      case 'YouTube': return <Video className="h-4 w-4 text-rose-500 dark:text-rose-400" />;
-      default: return <Type className="h-4 w-4 text-violet-500" />;
+      case 'Developer': return <Code className="h-5 w-5 text-emerald-500 dark:text-emerald-400" />;
+      case 'Finance': return <Calculator className="h-5 w-5 text-indigo-500 dark:text-indigo-400" />;
+      case 'YouTube': return <Video className="h-5 w-5 text-rose-500 dark:text-rose-400" />;
+      default: return <Type className="h-5 w-5 text-violet-500" />;
     }
   };
 
@@ -43,7 +43,7 @@ export default function HomePage() {
       <div>
         <Navbar />
 
-       {/* Hero Section - Simple & Natural */}
+        {/* Hero Section */}
         <section className="mx-auto max-w-5xl px-4 pt-16 pb-8 text-center">
           <h1 className="text-4xl font-extrabold sm:text-6xl tracking-tight text-zinc-950 dark:text-white max-w-4xl mx-auto leading-tight">
             All the Free Online Tools{' '}
@@ -74,7 +74,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Category Pills */}
+        {/* Category Filter Pills */}
         <section id="tools" className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-4 no-scrollbar">
             {CATEGORIES.map((category) => {
@@ -95,26 +95,25 @@ export default function HomePage() {
             })}
           </div>
 
-          {/* Compact 4-Column Tool Cards Grid */}
-          <div className="mt-6 grid grid-cols-1 gap-3.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 pb-20">
+          {/* TinyWow Style Clean, Breathable 4-Column Cards */}
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 pb-20">
             {filteredTools.map((tool: ToolMeta) => (
               <Link
                 key={tool.slug}
                 href={`/tools/${tool.slug}`}
-                className="group flex items-start gap-3 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 transition-all hover:scale-[1.02] hover:border-violet-400 dark:hover:border-violet-500 cursor-pointer shadow-sm"
+                className="group flex items-center gap-3.5 rounded-2xl border border-zinc-200/90 dark:border-zinc-800/80 bg-white dark:bg-zinc-900 p-4 transition-all hover:shadow-md hover:border-violet-400 dark:hover:border-violet-500 hover:-translate-y-0.5 cursor-pointer"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-50 dark:bg-zinc-800">
+                {/* Clean Rounded Icon Container */}
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-50 dark:bg-zinc-800/80 group-hover:scale-105 transition-transform">
                   {getToolIcon(tool.category)}
                 </div>
 
+                {/* Concise 2-Line Information */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-xs font-bold truncate group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors text-zinc-900 dark:text-white">
+                  <h3 className="text-xs sm:text-sm font-bold truncate text-zinc-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
                     {tool.name}
                   </h3>
-                  <span className="text-[10px] font-semibold text-violet-600 dark:text-violet-400 block mt-0.5">
-                    {tool.category} Tools
-                  </span>
-                  <p className="mt-1 text-[11px] leading-snug line-clamp-2 text-zinc-500 dark:text-zinc-400">
+                  <p className="mt-0.5 text-[11px] text-zinc-500 dark:text-zinc-400 truncate">
                     {tool.description}
                   </p>
                 </div>
