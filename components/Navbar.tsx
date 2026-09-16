@@ -2,103 +2,114 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Sparkles, Sun, Moon, ChevronDown } from 'lucide-react';
-import { TOOLS_REGISTRY } from '@/data/toolsRegistry';
+import { Sparkles, Sun, Moon, ChevronDown, Menu, X } from 'lucide-react';
+import LanguageSelector from '@/components/LanguageSelector';
 
 export default function Navbar() {
   const [isDark, setIsDark] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const root = document.documentElement;
-    if (isDark) {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
+    setMounted(true);
+    if (document.documentElement.classList.contains('dark')) {
+      setIsDark(true);
     }
-  }, [isDark]);
+  }, []);
 
-  // Dropdown Categories
-  const navCategories = [
-    { name: 'PDF', filter: 'PDF' },
-    { name: 'Image', filter: 'Image' },
-    { name: 'Compiler', filter: 'Compiler' },
-    { name: 'Finance', filter: 'Finance' },
-    { name: 'YouTube', filter: 'YouTube' }
-  ];
+  const toggleTheme = () => {
+    if (isDark) {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      setIsDark(false);
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      setIsDark(true);
+    }
+  };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md transition-colors text-zinc-900 dark:text-zinc-100">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        
+    <header className="sticky top-0 z-50 w-full border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md transition-colors">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2.5 shrink-0">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 text-white font-black shadow-md shadow-violet-500/20">
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 text-white shadow-md shadow-violet-500/20">
             <Sparkles className="h-5 w-5" />
           </div>
-          <div className="flex flex-col">
-            <span className="text-lg font-extrabold tracking-tight leading-none text-zinc-900 dark:text-white">
+          <div>
+            <span className="text-base font-black tracking-tight text-zinc-950 dark:text-white">
               TheTools<span className="text-violet-600 dark:text-violet-400">Genie</span>
             </span>
-            <span className="text-[10px] text-zinc-400 font-medium mt-0.5">Utility Suite</span>
+            <span className="hidden sm:block text-[9px] font-bold uppercase tracking-widest text-zinc-400">
+              Utility Suite
+            </span>
           </div>
         </Link>
 
-        {/* Hover-based Dropdown Navigation Menu */}
-        <nav className="hidden lg:flex items-center gap-1 text-xs font-semibold">
-          {navCategories.map((cat) => {
-            const catTools = TOOLS_REGISTRY.filter(
-              (t) => t.category.toLowerCase().includes(cat.filter.toLowerCase())
-            );
-
-            return (
-              <div key={cat.name} className="relative group py-5 px-3">
-                <button className="flex items-center gap-1 text-zinc-700 dark:text-zinc-300 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
-                  <span>{cat.name}</span>
-                  <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200 group-hover:rotate-180 text-zinc-400 group-hover:text-violet-600" />
-                </button>
-
-                {/* Dropdown Menu Box on Hover */}
-                <div className="absolute top-[52px] left-0 hidden group-hover:block w-64 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-2 shadow-xl animate-in fade-in slide-in-from-top-1 duration-150">
-                  <div className="px-2 py-1.5 text-[10px] font-bold text-zinc-400 uppercase tracking-wider border-b border-zinc-100 dark:border-zinc-800 mb-1">
-                    {cat.name} Utilities
-                  </div>
-                  <div className="max-h-72 overflow-y-auto space-y-0.5">
-                    {catTools.map((tool) => (
-                      <Link
-                        key={tool.slug}
-                        href={`/tools/${tool.slug}`}
-                        className="block rounded-lg px-2.5 py-2 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-violet-50 dark:hover:bg-violet-950/40 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
-                      >
-                        <p className="font-semibold truncate">{tool.name}</p>
-                        <p className="text-[10px] text-zinc-400 truncate mt-0.5">{tool.description}</p>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        {/* Category Navigation Links (Desktop) */}
+        <nav className="hidden lg:flex items-center gap-6 text-xs font-semibold text-zinc-600 dark:text-zinc-300">
+          <Link href="/tools?category=pdf" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+            PDF
+          </Link>
+          <Link href="/tools?category=image" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+            Image
+          </Link>
+          <Link href="/tools?category=compiler" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+            Compiler
+          </Link>
+          <Link href="/tools?category=finance" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+            Finance
+          </Link>
+          <Link href="/tools?category=converters" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+            Converters
+          </Link>
         </nav>
 
-        {/* Right Controls */}
+        {/* Top-Right Actions: Language Selector + Theme Toggle */}
         <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => setIsDark(!isDark)}
-            className="p-2 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-yellow-400 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-all"
-            title="Toggle Day/Night Mode"
-          >
-            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </button>
+          {/* International High-RPM Language Selector */}
+          <div className="hidden sm:block">
+            <LanguageSelector />
+          </div>
 
-          <Link
-            href="/#tools"
-            className="rounded-xl bg-violet-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-violet-700 transition-colors"
+          {/* Theme Toggle Button */}
+          {mounted && (
+            <button
+              onClick={toggleTheme}
+              aria-label="Toggle Theme"
+              className="flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:border-violet-400 dark:hover:border-violet-500 transition-all"
+            >
+              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </button>
+          )}
+
+          {/* Mobile Menu Trigger */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-200"
           >
-            Explore Tools
-          </Link>
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-4 py-4 space-y-3">
+          <div className="sm:hidden pb-3 border-b border-zinc-100 dark:border-zinc-800">
+            <LanguageSelector />
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+            <Link href="/tools" onClick={() => setMobileMenuOpen(false)} className="p-2 rounded-lg bg-zinc-50 dark:bg-zinc-900">All 80 Tools</Link>
+            <Link href="/tools?category=pdf" onClick={() => setMobileMenuOpen(false)} className="p-2 rounded-lg bg-zinc-50 dark:bg-zinc-900">PDF Tools</Link>
+            <Link href="/tools?category=image" onClick={() => setMobileMenuOpen(false)} className="p-2 rounded-lg bg-zinc-50 dark:bg-zinc-900">Image Tools</Link>
+            <Link href="/tools?category=compiler" onClick={() => setMobileMenuOpen(false)} className="p-2 rounded-lg bg-zinc-50 dark:bg-zinc-900">Compiler Tools</Link>
+            <Link href="/tools?category=finance" onClick={() => setMobileMenuOpen(false)} className="p-2 rounded-lg bg-zinc-50 dark:bg-zinc-900">Finance Tools</Link>
+            <Link href="/tools?category=converters" onClick={() => setMobileMenuOpen(false)} className="p-2 rounded-lg bg-zinc-50 dark:bg-zinc-900">Converters</Link>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
