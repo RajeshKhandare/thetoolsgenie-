@@ -2,56 +2,109 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Sparkles, ShieldCheck } from 'lucide-react';
-import { CATEGORIES } from '@/data/toolsRegistry';
+import { Sparkles, Heart } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-zinc-600 dark:text-zinc-400 transition-colors">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+    <footer className="border-t border-zinc-200/80 dark:border-zinc-800/80 bg-white dark:bg-zinc-950 text-zinc-600 dark:text-zinc-400 transition-colors">
+      <div className="mx-auto max-w-7xl px-4 pt-14 pb-10 sm:px-6">
+        
+        {/* Main 4-Column Grid */}
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-5">
           
-          <div className="md:col-span-2 space-y-3">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-600 text-white shadow-sm">
+          {/* Brand Info (2 Columns Wide) */}
+          <div className="md:col-span-2 space-y-4">
+            <Link href="/" className="flex items-center gap-2.5">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 text-white font-black shadow-md shadow-violet-500/20">
                 <Sparkles className="h-4 w-4" />
               </div>
-              <span className="text-base font-bold text-zinc-900 dark:text-white">
+              <span className="text-lg font-extrabold tracking-tight text-zinc-950 dark:text-white">
                 TheTools<span className="text-violet-600 dark:text-violet-400">Genie</span>
               </span>
             </Link>
+
             <p className="text-xs leading-relaxed text-zinc-500 dark:text-zinc-400 max-w-sm">
-              High-performance client-side utility suite. Compilers, financial engines, media cropping, and developer tools executing locally inside browser memory.
+              Free, fast, and accessible digital utilities built for creators, students, and developers. Edit, calculate, and convert directly in your browser.
             </p>
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800">
-              <ShieldCheck className="h-3.5 w-3.5" />
-              <span>Zero Server Uploads · Strict Client Privacy</span>
+
+            <div className="flex items-center gap-2 text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
+              <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>All utilities operational · 100% Free</span>
             </div>
           </div>
 
-          <div>
+          {/* Quick Categories */}
+          <div className="space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-white">
-              Tool Categories
+              Categories
             </h4>
-            <ul className="mt-3 space-y-2 text-xs">
-              {CATEGORIES.slice(1, 6).map((cat) => (
-                <li key={cat}>
-                  <Link href="/#tools" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
-                    {cat} Utilities
-                  </Link>
-                </li>
-              ))}
+            <ul className="space-y-2.5 text-xs">
+              <li>
+                <Link href="/#tools" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+                  PDF Tools
+                </Link>
+              </li>
+              <li>
+                <Link href="/#tools" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+                  Image Tools
+                </Link>
+              </li>
+              <li>
+                <Link href="/#tools" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+                  Compilers & Code
+                </Link>
+              </li>
+              <li>
+                <Link href="/#tools" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+                  Finance Calculators
+                </Link>
+              </li>
             </ul>
           </div>
 
-          <div>
+          {/* Popular Tools */}
+          <div className="space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-white">
-              Trust & Legal
+              Popular Tools
             </h4>
-            <ul className="mt-3 space-y-2 text-xs">
+            <ul className="space-y-2.5 text-xs">
+              <li>
+                <Link href="/tools/youtube-4k-thumbnail-grabber" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+                  YouTube Thumbnail Grabber
+                </Link>
+              </li>
+              <li>
+                <Link href="/tools/sip-wealth-calculator" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+                  SIP Wealth Calculator
+                </Link>
+              </li>
+              <li>
+                <Link href="/tools/online-python-compiler" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+                  Online Python Runner
+                </Link>
+              </li>
+              <li>
+                <Link href="/tools/merge-pdf" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+                  Merge PDF Documents
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Trust & Legal */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-white">
+              Platform
+            </h4>
+            <ul className="space-y-2.5 text-xs">
               <li>
                 <Link href="/about" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
-                  About Platform
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+                  Contact Support
                 </Link>
               </li>
               <li>
@@ -64,20 +117,19 @@ export default function Footer() {
                   Terms of Service
                 </Link>
               </li>
-              <li>
-                <Link href="/contact" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
-                  Contact & Support
-                </Link>
-              </li>
             </ul>
           </div>
 
         </div>
 
-        <div className="mt-10 border-t border-zinc-100 dark:border-zinc-800 pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-zinc-400 dark:text-zinc-500 gap-3">
-          <p>© {new Date().getFullYear()} TheToolsGenie. All tools execute locally under client runtime.</p>
-          <p>Built for instantaneous browser execution</p>
+        {/* Bottom Sub-footer */}
+        <div className="mt-12 border-t border-zinc-100 dark:border-zinc-800/80 pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-zinc-400 dark:text-zinc-500 gap-3">
+          <p>© {new Date().getFullYear()} TheToolsGenie. All rights reserved.</p>
+          <p className="flex items-center gap-1">
+            Crafted for speed and privacy
+          </p>
         </div>
+
       </div>
     </footer>
   );
