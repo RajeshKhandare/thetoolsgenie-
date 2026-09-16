@@ -2,6 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Sparkles, Terminal, ShieldCheck } from 'lucide-react';
+
 export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-violet-100 bg-white/80 backdrop-blur-md">
@@ -19,6 +20,7 @@ export default function Navbar() {
             </span>
           </div>
         </Link>
+
         <div className="hidden md:flex items-center gap-4 text-xs font-semibold">
           <div className="flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/60">
             <ShieldCheck className="h-4 w-4 text-emerald-600" />
@@ -29,6 +31,7 @@ export default function Navbar() {
             <span>WASM & Canvas Compute</span>
           </div>
         </div>
+
         <div className="flex items-center gap-3">
           <Link
             href="/#tools"
