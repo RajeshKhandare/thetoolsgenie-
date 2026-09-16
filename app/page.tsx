@@ -43,18 +43,17 @@ export default function HomePage() {
       <div>
         <Navbar />
 
-        {/* Hero Section */}
-        <section className="mx-auto max-w-5xl px-4 pt-14 pb-8 text-center">
-          <h1 className="text-3xl font-black sm:text-5xl lg:text-6xl tracking-tight text-zinc-950 dark:text-white">
-            Free Tools to Make{' '}
-            <span className="rounded-xl bg-violet-600 px-3.5 py-1 text-white inline-block shadow-md shadow-violet-500/20">
-              Your Work
-            </span>{' '}
-            Instant
+       {/* Hero Section - Simple & Natural */}
+        <section className="mx-auto max-w-5xl px-4 pt-16 pb-8 text-center">
+          <h1 className="text-4xl font-extrabold sm:text-6xl tracking-tight text-zinc-950 dark:text-white max-w-4xl mx-auto leading-tight">
+            All the Free Online Tools{' '}
+            <span className="bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">
+              You Need.
+            </span>
           </h1>
 
-          <p className="mt-4 text-xs sm:text-sm font-medium text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto">
-            Execute compilers, calculate finance plans, process PDFs, and crop images directly in your browser RAM. Zero uploads, zero latency.
+          <p className="mt-4 text-sm sm:text-base font-normal text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+            Simple, fast, and completely free utilities for PDF, images, code, and financial calculations.
           </p>
 
           {/* Search Box */}
