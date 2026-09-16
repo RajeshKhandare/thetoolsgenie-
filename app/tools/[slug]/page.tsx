@@ -143,29 +143,38 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
             </section>
           )}
 
-          {/* Interactive FAQs Accordion / Grid */}
+         {/* Interactive FAQs Section - Clean Structured List */}
           <section className="mt-14 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-10 shadow-sm">
-            <div className="flex items-center gap-2 mb-6 border-b border-zinc-100 dark:border-zinc-800 pb-4">
-              <HelpCircle className="h-5 w-5 text-violet-600 dark:text-violet-400" />
-              <h2 className="text-lg sm:text-xl font-black text-zinc-950 dark:text-white">
-                Frequently Asked Questions ({tool.name})
-              </h2>
+            <div className="flex items-center gap-2.5 mb-8 border-b border-zinc-100 dark:border-zinc-800 pb-5">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-50 dark:bg-zinc-800 text-violet-600 dark:text-violet-400">
+                <HelpCircle className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="text-lg sm:text-xl font-black text-zinc-950 dark:text-white tracking-tight">
+                  Frequently Asked Questions
+                </h2>
+                <p className="text-xs text-zinc-400 font-medium">
+                  Common queries about {tool.name} security and runtime
+                </p>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="divide-y divide-zinc-100 dark:divide-zinc-800/80">
               {dynamicFaqs.map((faq, idx) => (
-                <div key={idx} className="space-y-1.5 p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-100 dark:border-zinc-800">
-                  <h3 className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white">
-                    {faq.question}
+                <div key={idx} className="py-5 first:pt-0 last:pb-0 space-y-2">
+                  <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-start gap-2.5 leading-snug">
+                    <span className="text-violet-600 dark:text-violet-400 font-mono text-xs mt-0.5 font-bold">
+                      0{idx + 1}.
+                    </span>
+                    <span>{faq.question}</span>
                   </h3>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed pl-6">
                     {faq.answer}
                   </p>
                 </div>
               ))}
             </div>
           </section>
-
           {/* Related Tools */}
           {relatedTools.length > 0 && (
             <section className="mt-14">
