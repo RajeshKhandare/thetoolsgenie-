@@ -1,7 +1,8 @@
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Cpu, ShieldCheck, Zap, Layers, Sparkles } from 'lucide-react';
+import Link from 'next/link';
+import { Zap, ShieldCheck, Heart, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
 
 export default function AboutPage() {
   return (
@@ -9,58 +10,133 @@ export default function AboutPage() {
       <div>
         <Navbar />
 
-        <main className="mx-auto max-w-4xl px-4 py-16 sm:px-6">
-          <div className="rounded-3xl border border-zinc-200/90 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-8 sm:p-12 shadow-sm space-y-10">
-            
-            <div className="border-b border-zinc-100 dark:border-zinc-800 pb-8 text-center max-w-2xl mx-auto">
-              <span className="text-xs font-bold uppercase tracking-widest text-violet-600 dark:text-violet-400">
-                Architectural Mission
-              </span>
-              <h1 className="mt-3 text-3xl sm:text-5xl font-black tracking-tight text-zinc-950 dark:text-white">
-                About TheToolsGenie
-              </h1>
-              <p className="mt-3 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                Rebuilding web utilities around client-side privacy, instantaneous WASM compilation, and zero cloud uploads.
+        {/* Hero Section */}
+        <section className="mx-auto max-w-5xl px-4 pt-16 pb-12 text-center sm:px-6">
+          <span className="text-xs font-bold uppercase tracking-widest text-violet-600 dark:text-violet-400">
+            About TheToolsGenie
+          </span>
+          <h1 className="mt-3 text-4xl sm:text-6xl font-black tracking-tight text-zinc-950 dark:text-white leading-tight">
+            Making Everyday Digital Tasks{' '}
+            <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
+              Effortless.
+            </span>
+          </h1>
+          <p className="mt-4 text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+            A free, multi-category utility hub built to help students, developers, and creators solve daily tasks without paywalls or complicated software.
+          </p>
+
+          <div className="mt-8">
+            <Link
+              href="/#tools"
+              className="inline-flex items-center gap-2 rounded-2xl bg-violet-600 px-6 py-3 text-xs font-bold text-white shadow-md shadow-violet-500/20 hover:bg-violet-700 transition-all hover:scale-[1.02]"
+            >
+              <span>Explore All Free Tools</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        </section>
+
+        {/* Realistic Trust Metrics Bar */}
+        <section className="border-y border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 py-10">
+          <div className="mx-auto max-w-5xl px-4 sm:px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+              <p className="text-3xl sm:text-4xl font-black text-violet-600 dark:text-violet-400">80+</p>
+              <p className="mt-1 text-xs font-bold text-zinc-800 dark:text-zinc-200">Free Utilities</p>
+              <p className="text-[11px] text-zinc-400">Expanding continuously</p>
+            </div>
+            <div>
+              <p className="text-3xl sm:text-4xl font-black text-violet-600 dark:text-violet-400">100%</p>
+              <p className="mt-1 text-xs font-bold text-zinc-800 dark:text-zinc-200">No Paywalls</p>
+              <p className="text-[11px] text-zinc-400">No hidden subscriptions</p>
+            </div>
+            <div>
+              <p className="text-3xl sm:text-4xl font-black text-violet-600 dark:text-violet-400">0</p>
+              <p className="mt-1 text-xs font-bold text-zinc-800 dark:text-zinc-200">Sign-Ups Needed</p>
+              <p className="text-[11px] text-zinc-400">Instant access to all tools</p>
+            </div>
+            <div>
+              <p className="text-3xl sm:text-4xl font-black text-violet-600 dark:text-violet-400">Private</p>
+              <p className="mt-1 text-xs font-bold text-zinc-800 dark:text-zinc-200">By Design</p>
+              <p className="text-[11px] text-zinc-400">Files process right in your browser</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Narrative: Our Story */}
+        <main className="mx-auto max-w-4xl px-4 py-16 sm:px-6 space-y-16">
+          <article className="space-y-4 text-center sm:text-left">
+            <span className="text-xs font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400">
+              Our Journey
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-950 dark:text-white">
+              Built to Solve Real-World Daily Inconveniences
+            </h2>
+            <div className="space-y-4 text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed pt-2">
+              <p>
+                TheToolsGenie started from a simple frustration: whenever you need to quickly resize an image, test a query, calculate interest, or grab a thumbnail, modern search results lead to bloated websites covered in paywalls, forced email registrations, or daily limits.
+              </p>
+              <p>
+                We believed simple tasks should remain simple. You shouldn&apos;t need to download heavy desktop software or hand over personal data just to format text or convert an image.
+              </p>
+              <p>
+                Our vision is straightforward: bring together high-utility everyday digital tools into a clean, modern interface where anyone can get their job done instantly and get back to what matters.
               </p>
             </div>
+          </article>
 
-            <section className="space-y-4 text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
-              <p>
-                Legacy utility platforms rely on obsolete architectures: whenever you crop an image, format SQL queries, or calculate loans, your sensitive files are uploaded to third-party cloud VMs. This incurs needless waiting latency and compromises file confidentiality.
-              </p>
-              <p>
-                <strong>TheToolsGenie</strong> was engineered as an ultra-fast in-browser alternative. By executing calculations and media rendering through local client APIs, every task completes in microseconds without ever leaving your machine.
-              </p>
-            </section>
+          {/* 4 Core Pillars */}
+          <section className="space-y-6">
+            <div className="text-center sm:text-left">
+              <span className="text-xs font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400">
+                Core Values
+              </span>
+              <h2 className="text-2xl font-extrabold text-zinc-950 dark:text-white mt-1">
+                What Guides TheToolsGenie
+              </h2>
+            </div>
 
-            {/* 3 Value Pillars */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-2">
-              <div className="rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-800/40 p-5 space-y-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-100 dark:bg-violet-950 text-violet-600 dark:text-violet-400 mb-3">
-                  <Cpu className="h-5 w-5" />
-                </div>
-                <h3 className="text-xs font-bold text-zinc-900 dark:text-white">Client WASM Compute</h3>
-                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">Compilers run locally inside isolated WebAssembly environments without server dependencies.</p>
-              </div>
-
-              <div className="rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-800/40 p-5 space-y-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 mb-3">
-                  <ShieldCheck className="h-5 w-5" />
-                </div>
-                <h3 className="text-xs font-bold text-zinc-900 dark:text-white">Absolute Privacy</h3>
-                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">Zero remote file storage. All operational memory is garbage-collected upon browser tab closure.</p>
-              </div>
-
-              <div className="rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-800/40 p-5 space-y-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 mb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 shadow-sm space-y-2">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 mb-3">
                   <Zap className="h-5 w-5" />
                 </div>
-                <h3 className="text-xs font-bold text-zinc-900 dark:text-white">Instant 0ms Feedback</h3>
-                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">No upload queues or server timeouts. Your device hardware delivers instant processing.</p>
+                <h3 className="text-sm font-bold text-zinc-900 dark:text-white">Fast & Accessible</h3>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                  Every tool loads clean and fast on both mobile and desktop. No installation, no account creation, and zero waiting time.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 shadow-sm space-y-2">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 mb-3">
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
+                <h3 className="text-sm font-bold text-zinc-900 dark:text-white">Privacy First</h3>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                  We don&apos;t ask for accounts or store your documents. Work happens directly inside your browser so your data remains yours.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 shadow-sm space-y-2">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 mb-3">
+                  <Sparkles className="h-5 w-5" />
+                </div>
+                <h3 className="text-sm font-bold text-zinc-900 dark:text-white">Free for Everyone</h3>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                  Essential digital utilities should be open to all. Students, creators, and freelancers can use every feature without hidden tiers.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 shadow-sm space-y-2">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-pink-100 dark:bg-pink-950/60 text-pink-600 dark:text-pink-400 mb-3">
+                  <Heart className="h-5 w-5" />
+                </div>
+                <h3 className="text-sm font-bold text-zinc-900 dark:text-white">Built on Community Feedback</h3>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                  We actively review tool suggestions and bug reports sent via our contact desk to continuously polish and expand the suite.
+                </p>
               </div>
             </div>
-
-          </div>
+          </section>
         </main>
       </div>
 
