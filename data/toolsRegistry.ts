@@ -20,7 +20,9 @@ export const CATEGORIES = [
 ];
 
 export const TOOLS_REGISTRY: ToolMeta[] = [
-  // --- PDF TOOLS ---
+  // ==========================================
+  // BATCH 1 (16 TOOLS)
+  // ==========================================
   {
     slug: 'merge-pdf',
     name: 'Merge PDF Documents',
@@ -57,8 +59,6 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     companionToolSlug: 'merge-pdf',
     companionPitch: 'Merge confidential files prior to applying encryption.',
   },
-
-  // --- IMAGE TOOLS ---
   {
     slug: 'client-image-compressor',
     name: 'Client Image Compressor',
@@ -95,8 +95,6 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     companionToolSlug: 'custom-freeform-image-cropper',
     companionPitch: 'Crop your rasterized vector graphic for social media profiles.',
   },
-
-  // --- COMPILER & RUNNER TOOLS ---
   {
     slug: 'online-python-compiler',
     name: 'Online Python Runner',
@@ -124,8 +122,6 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     companionToolSlug: 'json-prettifier-validator',
     companionPitch: 'Format and inspect JSON data structures returned by your JS scripts.',
   },
-
-  // --- DEVELOPER UTILITIES ---
   {
     slug: 'json-prettifier-validator',
     name: 'JSON Prettifier & Validator',
@@ -153,8 +149,6 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     companionToolSlug: 'live-word-character-counter',
     companionPitch: 'Verify total character count and word density of your slug titles.',
   },
-
-  // --- FINANCE ENGINES ---
   {
     slug: 'sip-wealth-calculator',
     name: 'SIP Wealth Calculator',
@@ -182,8 +176,6 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     companionToolSlug: 'sip-wealth-calculator',
     companionPitch: 'Invest your surplus monthly loan savings into a systematic wealth plan.',
   },
-
-  // --- YOUTUBE & MEDIA TOOLS ---
   {
     slug: 'youtube-4k-thumbnail-grabber',
     name: 'YouTube 4K Thumbnail Grabber',
@@ -193,15 +185,161 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     companionToolSlug: 'client-image-compressor',
     companionPitch: 'Compress the extracted high-res cover thumbnail for faster web embeds.',
   },
-
-  // --- TEXT UTILITIES ---
   {
     slug: 'live-word-character-counter',
     name: 'Live Word & Character Counter',
     category: 'Text',
     description: 'Real-time calculation of word density, character count, sentence length, and reading time.',
     badge: 'Text Engine',
+    companionToolSlug: 'case-converter',
+    companionPitch: 'Format and transform text case after reviewing your word counts.',
+  },
+
+  // ==========================================
+  // BATCH 2 (EXPANSION TO 32 TOOLS)
+  // ==========================================
+  {
+    slug: 'case-converter',
+    name: 'Case Converter',
+    category: 'Text',
+    description: 'Instantly transform text into UPPERCASE, lowercase, Title Case, and Sentence case.',
+    badge: 'Text Engine',
+    companionToolSlug: 'live-word-character-counter',
+    companionPitch: 'Check your updated word and letter counts after casing transformation.',
+  },
+  {
+    slug: 'remove-duplicate-lines',
+    name: 'Remove Duplicate Lines',
+    category: 'Text',
+    description: 'Clean lists and data arrays by removing identical lines and sorting entries.',
+    badge: 'Text Engine',
+    companionToolSlug: 'live-word-character-counter',
+    companionPitch: 'Count the remaining unique words and lines in your cleaned dataset.',
+  },
+  {
+    slug: 'lorem-ipsum-generator',
+    name: 'Lorem Ipsum Generator',
+    category: 'Text',
+    description: 'Generate customizable placeholder text, sentences, and paragraphs for UI mockups.',
+    badge: 'Text Engine',
+    companionToolSlug: 'live-word-character-counter',
+    companionPitch: 'Analyze the reading time and character density of the dummy paragraphs.',
+  },
+  {
+    slug: 'markdown-previewer',
+    name: 'Markdown Live Previewer',
+    category: 'Text',
+    description: 'Write Markdown syntax and preview rendered HTML styling in real-time.',
+    badge: 'Parser Engine',
+    companionToolSlug: 'case-converter',
+    companionPitch: 'Convert headings and titles to proper casing for documentation.',
+  },
+  {
+    slug: 'html-entity-encoder',
+    name: 'HTML Entity Encoder',
+    category: 'Developer',
+    description: 'Convert special symbols and characters into safe HTML entity escape sequences.',
+    badge: 'Parser Engine',
     companionToolSlug: 'json-prettifier-validator',
-    companionPitch: 'Validate and format text payloads after checking length constraints.',
+    companionPitch: 'Validate JSON payloads that include escaped HTML strings.',
+  },
+  {
+    slug: 'css-minifier',
+    name: 'CSS Minifier & Cleaner',
+    category: 'Developer',
+    description: 'Compress stylesheet rules by stripping unnecessary spaces and line breaks.',
+    badge: 'Code Engine',
+    companionToolSlug: 'json-prettifier-validator',
+    companionPitch: 'Prettify and format any config objects used in your front-end scripts.',
+  },
+  {
+    slug: 'unix-timestamp-converter',
+    name: 'Unix Timestamp Converter',
+    category: 'Developer',
+    description: 'Convert Epoch timestamps to human-readable UTC dates and local time formats.',
+    badge: 'Time Engine',
+    companionToolSlug: 'online-javascript-runner',
+    companionPitch: 'Test Date object manipulation algorithms inside our JS sandbox.',
+  },
+  {
+    slug: 'color-hex-to-rgb',
+    name: 'HEX to RGB/HSL Converter',
+    category: 'Developer',
+    description: 'Convert HEX color codes into CSS RGB, RGBA, and HSL values with live swatch preview.',
+    badge: 'CSS Engine',
+    companionToolSlug: 'css-minifier',
+    companionPitch: 'Minify and optimize your theme stylesheets containing color variables.',
+  },
+  {
+    slug: 'percentage-calculator',
+    name: 'Percentage Calculator',
+    category: 'Finance',
+    description: 'Quickly calculate percentage increase, decrease, margins, and discounts.',
+    badge: 'Math Engine',
+    companionToolSlug: 'sip-wealth-calculator',
+    companionPitch: 'Simulate annual portfolio growth percentages over multi-year horizons.',
+  },
+  {
+    slug: 'simple-interest-calculator',
+    name: 'Simple Interest Calculator',
+    category: 'Finance',
+    description: 'Calculate interest accrued on loans or fixed deposits without compounding.',
+    badge: 'Finance Math',
+    companionToolSlug: 'compound-interest-calculator',
+    companionPitch: 'Compare linear simple interest growth directly with compounding results.',
+  },
+  {
+    slug: 'inflation-calculator',
+    name: 'Inflation Impact Calculator',
+    category: 'Finance',
+    description: 'Calculate future purchasing power erosion based on historical inflation rates.',
+    badge: 'Finance Math',
+    companionToolSlug: 'sip-wealth-calculator',
+    companionPitch: 'Model equity SIP contributions to outpace projected inflation rates.',
+  },
+  {
+    slug: 'gst-vat-tax-calculator',
+    name: 'GST / VAT Tax Calculator',
+    category: 'Finance',
+    description: 'Calculate gross, net, and tax split amounts for inclusive and exclusive slabs.',
+    badge: 'Tax Engine',
+    companionToolSlug: 'percentage-calculator',
+    companionPitch: 'Calculate margin percentages before and after tax deduction.',
+  },
+  {
+    slug: 'grayscale-image-filter',
+    name: 'Grayscale Image Filter',
+    category: 'Image',
+    description: 'Convert colored photographs into black and white images directly in browser Canvas.',
+    badge: 'Canvas Engine',
+    companionToolSlug: 'client-image-compressor',
+    companionPitch: 'Compress your monochrome image before publishing to the web.',
+  },
+  {
+    slug: 'invert-image-colors',
+    name: 'Invert Image Colors',
+    category: 'Image',
+    description: 'Invert RGB pixel values to generate negative image effects in client RAM.',
+    badge: 'Canvas Engine',
+    companionToolSlug: 'custom-freeform-image-cropper',
+    companionPitch: 'Crop the inverted image asset to fit standard aspect ratios.',
+  },
+  {
+    slug: 'flip-rotate-image',
+    name: 'Flip & Rotate Image',
+    category: 'Image',
+    description: 'Rotate images by 90/180 degrees or flip horizontally and vertically in local memory.',
+    badge: 'Canvas Engine',
+    companionToolSlug: 'client-image-compressor',
+    companionPitch: 'Optimize storage size on your rotated photo assets.',
+  },
+  {
+    slug: 'qr-code-generator',
+    name: 'Instant QR Code Generator',
+    category: 'Image',
+    description: 'Generate high-resolution scannable QR codes for URLs, text, and Wi-Fi networks.',
+    badge: 'Vector Engine',
+    companionToolSlug: 'custom-freeform-image-cropper',
+    companionPitch: 'Trim margins around your QR code graphic for clean document printing.',
   },
 ];
