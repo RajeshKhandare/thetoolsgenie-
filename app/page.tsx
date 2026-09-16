@@ -43,16 +43,16 @@ export default function HomePage() {
       <div>
         <Navbar />
 
-        {/* Hero Section */}
-        <section className="mx-auto max-w-5xl px-4 pt-16 pb-8 text-center">
-          <h1 className="text-4xl font-extrabold sm:text-6xl tracking-tight text-zinc-950 dark:text-white max-w-4xl mx-auto leading-tight">
+       {/* Hero Section - Premium Modern Typography */}
+        <section className="mx-auto max-w-5xl px-4 pt-20 pb-10 text-center">
+          <h1 className="text-4xl font-extrabold sm:text-6xl lg:text-7xl tracking-[-0.03em] text-zinc-950 dark:text-white max-w-4xl mx-auto leading-[1.12]">
             All the Free Online Tools{' '}
-            <span className="bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 dark:from-violet-400 dark:via-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
               You Need.
             </span>
           </h1>
 
-          <p className="mt-4 text-sm sm:text-base font-normal text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-5 text-sm sm:text-base md:text-lg font-normal text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed tracking-normal">
             Simple, fast, and completely free utilities for PDF, images, code, and financial calculations.
           </p>
 
