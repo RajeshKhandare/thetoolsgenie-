@@ -5,22 +5,28 @@ import ToolEngineRunner from '@/components/ToolEngineRunner';
 import { TOOLS_REGISTRY, ToolMeta } from '@/data/toolsRegistry';
 import { ShieldCheck, Cpu, BookOpen, ArrowRight, Zap } from 'lucide-react';
 import Link from 'next/link';
+
 export async function generateStaticParams() {
   return TOOLS_REGISTRY.map((tool) => ({
     slug: tool.slug,
   }));
 }
+
 export default function ToolPage({ params }: { params: { slug: string } }) {
   const tool = TOOLS_REGISTRY.find((t) => t.slug === params.slug);
+
   if (!tool) {
     notFound();
   }
+
   const companionTool = TOOLS_REGISTRY.find(
     (t) => t.slug === tool.companionToolSlug
   );
+
   const relatedTools = TOOLS_REGISTRY.filter(
     (t) => t.slug !== tool.slug
   ).slice(0, 3);
+
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -51,12 +57,15 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
       },
     ],
   };
+
   return (
-    <div className="min-h-screen bg-zinc-50/40 text-zinc-900 selection:bg-violet-100 selection:text-violet-900 pb-20">\n      <Navbar />
+    <div className="min-h-screen bg-zinc-50/40 text-zinc-900 selection:bg-violet-100 selection:text-violet-900 pb-20">
+      <Navbar />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
+
       <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
         <nav className="flex items-center gap-2 text-xs text-zinc-500 mb-6">
           <Link href="/" className="hover:text-violet-600 transition-colors">Home</Link>
@@ -65,7 +74,9 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
           <span>/</span>
           <span className="font-semibold text-zinc-900">{tool.name}</span>
         </nav>
+
         <ToolEngineRunner tool={tool} />
+
         {companionTool && (
           <section className="mt-8 rounded-2xl border border-violet-200 bg-gradient-to-r from-violet-50/80 via-white to-indigo-50/80 p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-1">
@@ -77,6 +88,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
                 {tool.companionPitch}
               </p>
             </div>
+
             <Link
               href={`/tools/${companionTool.slug}`}
               className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-violet-700 transition-all shrink-0 hover:translate-x-0.5"
@@ -86,12 +98,14 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
             </Link>
           </section>
         )}
+
         <article className="mt-12 space-y-8 rounded-2xl border border-zinc-200/80 bg-white p-6 sm:p-10 shadow-sm text-zinc-800">
           <div className="border-b border-zinc-100 pb-6">
             <div className="flex items-center gap-2 text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full w-fit border border-emerald-200/60 mb-3">
               <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
               <span>Verified Client-Side Execution Standard</span>
             </div>
+
             <h1 className="text-2xl font-black tracking-tight sm:text-3xl text-zinc-950">
               Technical Guide: {tool.name} Architecture
             </h1>
@@ -99,6 +113,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
               An exhaustive architectural analysis of client-side execution, algorithmic performance, and memory sandboxing.
             </p>
           </div>
+
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-zinc-900 flex items-center gap-2">
               <Cpu className="h-5 w-5 text-violet-600" />
@@ -109,6 +124,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
               this tool operates under a strict <strong>Zero-Server Execution Paradigm</strong>. Everything executes strictly inside your browser thread via sandboxed WebAssembly (WASM) and local Canvas allocations.
             </p>
           </section>
+
           <section className="space-y-3">
             <h3 className="text-sm font-bold text-zinc-900">Architecture & Performance Metrics</h3>
             <div className="overflow-x-auto">
@@ -140,6 +156,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
               </table>
             </div>
           </section>
+
           <section className="space-y-4 pt-4 border-t border-zinc-100">
             <h2 className="text-lg font-bold text-zinc-900 flex items-center gap-2">
               <BookOpen className="h-5 w-5 text-violet-600" />
@@ -154,6 +171,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
                   Yes. All output files, extracted covers, and calculated growth schedules generated by this engine are completely royalty-free.
                 </p>
               </div>
+
               <div className="rounded-xl border border-zinc-100 p-4 bg-zinc-50/50">
                 <h4 className="text-xs font-bold text-zinc-900">
                   Why does this tool execute faster than other online utilities?
@@ -165,6 +183,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
             </div>
           </section>
         </article>
+
         <section className="mt-12">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-bold text-zinc-900">Explore Other Utilities</h3>
@@ -172,6 +191,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
               View All 80 Tools →
             </Link>
           </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {relatedTools.map((relTool: ToolMeta) => (
               <Link
