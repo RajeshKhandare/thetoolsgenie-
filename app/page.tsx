@@ -43,32 +43,32 @@ export default function HomePage() {
       <div>
         <Navbar />
 
-       {/* Hero Section - Premium Modern Typography */}
-        <section className="mx-auto max-w-5xl px-4 pt-20 pb-10 text-center">
-          <h1 className="text-4xl font-extrabold sm:text-6xl lg:text-7xl tracking-[-0.03em] text-zinc-950 dark:text-white max-w-4xl mx-auto leading-[1.12]">
+        {/* Hero Section - Compact Balanced Spacing */}
+        <section className="mx-auto max-w-5xl px-4 pt-8 sm:pt-10 pb-6 text-center">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-[-0.03em] text-zinc-950 dark:text-white max-w-4xl mx-auto leading-[1.14]">
             All the Free Online Tools{' '}
             <span className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 dark:from-violet-400 dark:via-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
               You Need.
             </span>
           </h1>
 
-          <p className="mt-5 text-sm sm:text-base md:text-lg font-normal text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed tracking-normal">
+          <p className="mt-3 text-xs sm:text-sm md:text-base font-normal text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed tracking-normal">
             Simple, fast, and completely free utilities for PDF, images, code, and financial calculations.
           </p>
 
           {/* Search Box */}
-          <div className="mt-8 max-w-xl mx-auto flex items-center gap-2">
+          <div className="mt-6 max-w-xl mx-auto flex items-center gap-2">
             <div className="relative flex-1 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm">
-              <Search className="absolute left-4 top-3.5 h-4 w-4 text-zinc-400" />
+              <Search className="absolute left-4 top-3 h-4 w-4 text-zinc-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search tools (e.g. compress image, python, sip)..."
-                className="w-full bg-transparent py-3 pl-11 pr-4 text-xs focus:outline-none text-zinc-900 dark:text-white placeholder:text-zinc-400"
+                className="w-full bg-transparent py-2.5 pl-11 pr-4 text-xs focus:outline-none text-zinc-900 dark:text-white placeholder:text-zinc-400"
               />
             </div>
-            <button className="rounded-2xl bg-violet-600 px-6 py-3 text-xs font-bold text-white hover:bg-violet-700 transition-colors shadow-md shadow-violet-500/20">
+            <button className="rounded-2xl bg-violet-600 px-6 py-2.5 text-xs font-bold text-white hover:bg-violet-700 transition-colors shadow-md shadow-violet-500/20">
               Search
             </button>
           </div>
