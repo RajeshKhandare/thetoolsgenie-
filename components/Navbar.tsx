@@ -1,41 +1,61 @@
 'use client';
-import React from 'react';
-import Link from 'next/link';
-import { Sparkles, Terminal, ShieldCheck } from 'lucide-react';
 
-export default function Navbar() {
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { Sparkles, Sun, Moon, Search } from 'lucide-react';
+
+export default function Navbar({
+  isDark,
+  setIsDark,
+}: {
+  isDark: boolean;
+  setIsDark: (val: boolean) => void;
+}) {
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-violet-100 bg-white/80 backdrop-blur-md">
+    <header className={`sticky top-0 z-50 w-full border-b transition-colors ${
+      isDark ? 'bg-[#0f172a] border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-900'
+    }`}>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-200 group-hover:scale-105 transition-transform">
+        
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white font-black shadow-md">
             <Sparkles className="h-5 w-5" />
           </div>
           <div className="flex flex-col">
-            <span className="text-lg font-bold tracking-tight text-zinc-900 leading-none">
-              TheTools<span className="text-violet-600">Genie</span>
+            <span className="text-lg font-extrabold tracking-tight leading-none">
+              TheTools<span className="text-blue-500">Genie</span>
             </span>
-            <span className="text-[10px] font-medium text-zinc-400 mt-0.5">
-              Client-Side Utility Suite
-            </span>
+            <span className="text-[10px] text-zinc-400 font-medium">by UtilityLab</span>
           </div>
         </Link>
 
-        <div className="hidden md:flex items-center gap-4 text-xs font-semibold">
-          <div className="flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/60">
-            <ShieldCheck className="h-4 w-4 text-emerald-600" />
-            <span>100% In-Browser · ₹0 Server Upload</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-violet-700 bg-violet-50 px-3 py-1 rounded-full border border-violet-200/60">
-            <Terminal className="h-3.5 w-3.5 text-violet-600" />
-            <span>WASM & Canvas Compute</span>
-          </div>
-        </div>
+        {/* Center Quick Navigation Links (TinyWow style) */}
+        <nav className="hidden md:flex items-center gap-6 text-xs font-semibold">
+          <Link href="/#tools" className="hover:text-blue-500 transition-colors">PDF Tools</Link>
+          <Link href="/#tools" className="hover:text-blue-500 transition-colors">Image Tools</Link>
+          <Link href="/#tools" className="hover:text-blue-500 transition-colors">Compilers</Link>
+          <Link href="/#tools" className="hover:text-blue-500 transition-colors">Finance Tools</Link>
+        </nav>
 
+        {/* Right Actions: Dark/Light Filter + Action */}
         <div className="flex items-center gap-3">
+          {/* Day / Night Toggle Icon */}
+          <button
+            onClick={() => setIsDark(!isDark)}
+            className={`p-2 rounded-xl border transition-all ${
+              isDark 
+                ? 'border-zinc-700 bg-zinc-800/80 text-yellow-400 hover:bg-zinc-700' 
+                : 'border-zinc-200 bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
+            }`}
+            title="Toggle Day/Night Mode"
+          >
+            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
+
           <Link
             href="/#tools"
-            className="rounded-lg bg-violet-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-violet-700 transition-colors"
+            className="rounded-xl bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-blue-700 transition-colors"
           >
             Explore Tools
           </Link>
