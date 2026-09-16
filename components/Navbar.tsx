@@ -1,15 +1,11 @@
 'use client';
-
 import React from 'react';
 import Link from 'next/link';
 import { Sparkles, Terminal, ShieldCheck } from 'lucide-react';
-
 export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-violet-100 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        
-        {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-200 group-hover:scale-105 transition-transform">
             <Sparkles className="h-5 w-5" />
@@ -23,8 +19,6 @@ export default function Navbar() {
             </span>
           </div>
         </Link>
-
-        {/* Feature Highlights */}
         <div className="hidden md:flex items-center gap-4 text-xs font-semibold">
           <div className="flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/60">
             <ShieldCheck className="h-4 w-4 text-emerald-600" />
@@ -35,8 +29,6 @@ export default function Navbar() {
             <span>WASM & Canvas Compute</span>
           </div>
         </div>
-
-        {/* Action Button */}
         <div className="flex items-center gap-3">
           <Link
             href="/#tools"
@@ -45,7 +37,6 @@ export default function Navbar() {
             Explore Tools
           </Link>
         </div>
-
       </div>
     </header>
   );

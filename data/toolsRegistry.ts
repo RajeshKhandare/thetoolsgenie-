@@ -8,7 +8,6 @@ export interface ToolMeta {
   companionToolSlug: string;
   companionPitch: string;
 }
-
 export const CATEGORIES = [
   'All',
   'Compiler',
@@ -20,9 +19,7 @@ export const CATEGORIES = [
   'Developer',
   'Text'
 ] as const;
-
 export const TOOLS_REGISTRY: ToolMeta[] = [
-  // 1. Compiler Tools
   {
     slug: 'online-python-compiler',
     name: 'Online Python Compiler & Runner',
@@ -43,8 +40,6 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     companionToolSlug: 'uuid-generator',
     companionPitch: 'Need dummy unique keys for testing SQL inserts? Generate v4 UUID batches.'
   },
-
-  // 2. Finance Tools
   {
     slug: 'sip-calculator',
     name: 'SIP Wealth & Compounding Calculator',
@@ -65,8 +60,6 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     companionToolSlug: 'sip-calculator',
     companionPitch: 'Planning monthly systematic investments instead? Switch to SIP Wealth Planner.'
   },
-
-  // 3. YouTube Tools
   {
     slug: 'youtube-thumbnail-grabber',
     name: 'YouTube 4K Thumbnail Grabber',
@@ -77,8 +70,6 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     companionToolSlug: 'image-cropper',
     companionPitch: 'Extracted thumbnail needs aspect adjustments? Crop to custom ratios in browser.'
   },
-
-  // 4. Image Crop Tools
   {
     slug: 'image-cropper',
     name: 'Custom Freeform Image Cropper',
@@ -89,8 +80,6 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     companionToolSlug: 'image-compressor',
     companionPitch: 'Reduce file size after cropping without uploading photos to external servers.'
   },
-
-  // 5. Image Tools
   {
     slug: 'image-compressor',
     name: 'Client-Side Image Compressor',
@@ -101,8 +90,6 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     companionToolSlug: 'image-cropper',
     companionPitch: 'Need to trim borders first? Crop your image before compressing.'
   },
-
-  // 6. PDF Tools
   {
     slug: 'merge-pdf',
     name: 'Merge Multiple PDF Documents',
@@ -113,8 +100,6 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     companionToolSlug: 'word-counter',
     companionPitch: 'Need to audit text volume or check character counts for documentation?'
   },
-
-  // 7. Developer Tools
   {
     slug: 'json-prettifier',
     name: 'JSON Prettifier & Validator',
@@ -125,8 +110,6 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     companionToolSlug: 'online-python-compiler',
     companionPitch: 'Testing scripts that consume this JSON? Run Python directly in browser.'
   },
-
-  // 8. Text Tools
   {
     slug: 'word-counter',
     name: 'Live Word & Character Counter',
