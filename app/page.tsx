@@ -5,12 +5,13 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { TOOLS_REGISTRY, CATEGORIES, ToolMeta } from '@/data/toolsRegistry';
-import { Search, FileText, Image as ImageIcon, Code, Calculator, Video, Type } from 'lucide-react';
+import { Search, FileText, Image as ImageIcon, Code, Calculator, Video, Type, ArrowRight } from 'lucide-react';
 
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
+  // Filter tools based on search & category
   const filteredTools = useMemo(() => {
     return TOOLS_REGISTRY.filter((tool) => {
       const matchesCategory =
@@ -24,6 +25,12 @@ export default function HomePage() {
       return matchesCategory && matchesSearch;
     });
   }, [searchQuery, selectedCategory]);
+
+  // Keep homepage compact: limit to first 12 tools unless searching
+  const displayedTools = useMemo(() => {
+    if (searchQuery.trim().length > 0) return filteredTools;
+    return filteredTools.slice(0, 12);
+  }, [filteredTools, searchQuery]);
 
   const getToolIcon = (cat: string) => {
     switch (cat) {
@@ -43,7 +50,7 @@ export default function HomePage() {
       <div>
         <Navbar />
 
-        {/* Hero Section - Compact Balanced Spacing */}
+        {/* Hero Section */}
         <section className="mx-auto max-w-5xl px-4 pt-8 sm:pt-10 pb-6 text-center">
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-[-0.03em] text-zinc-950 dark:text-white max-w-4xl mx-auto leading-[1.14]">
             All the Free Online Tools{' '}
@@ -89,15 +96,15 @@ export default function HomePage() {
                       : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 hover:border-violet-300 dark:hover:border-zinc-700'
                   }`}
                 >
-                  {category === 'All' ? 'All Tools' : `${category} Tools`}
+                  {category === 'All' ? 'Popular Tools' : `${category} Tools`}
                 </button>
               );
             })}
           </div>
 
-          {/* TinyWow 4-Column Tool Cards Grid with Category Tags */}
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 pb-20">
-            {filteredTools.map((tool: ToolMeta) => (
+          {/* 12-Card Grid */}
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {displayedTools.map((tool: ToolMeta) => (
               <Link
                 key={tool.slug}
                 href={`/tools/${tool.slug}`}
@@ -123,6 +130,19 @@ export default function HomePage() {
               </Link>
             ))}
           </div>
+
+          {/* "Explore All 80+ Tools" Button */}
+          {searchQuery.trim().length === 0 && (
+            <div className="mt-12 mb-20 text-center">
+              <Link
+                href="/tools"
+                className="inline-flex items-center gap-2 rounded-2xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 px-8 py-3.5 text-xs font-extrabold hover:bg-violet-600 dark:hover:bg-violet-500 dark:hover:text-white transition-all shadow-md hover:scale-[1.02]"
+              >
+                <span>Explore All Tools & Categories</span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          )}
         </section>
       </div>
 
