@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ToolEngineRunner from '@/components/ToolEngineRunner';
 import { TOOLS_REGISTRY, ToolMeta } from '@/data/toolsRegistry';
-import { ShieldCheck, Cpu, ArrowRight, Zap } from 'lucide-react';
+import { ShieldCheck, Cpu, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 export async function generateStaticParams() {
@@ -98,13 +98,8 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
         />
 
         <main className="mx-auto max-w-5xl px-4 pt-8 sm:pt-10 pb-16 sm:px-6">
-          {/* Standalone Tool Hero - Compact Spacing */}
+          {/* Standalone Tool Hero - Clean Minimalist SaaS Look */}
           <div className="text-center max-w-3xl mx-auto mb-8">
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 dark:bg-zinc-900 px-3 py-1 text-xs font-semibold text-violet-700 dark:text-violet-400 border border-violet-200/60 dark:border-zinc-800 mb-3">
-              <Zap className="h-3.5 w-3.5 text-violet-600 dark:text-violet-400" />
-              <span>{tool.badge} · Instant Local Execution</span>
-            </div>
-            
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-zinc-950 dark:text-white">
               {tool.name}
             </h1>
