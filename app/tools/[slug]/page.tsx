@@ -49,6 +49,132 @@ export async function generateMetadata({
   };
 }
 
+function getCategoryFaqs(tool: ToolMeta) {
+  switch (tool.category) {
+    case 'PDF':
+      return [
+        {
+          question: `Does ${tool.name} store or view the contents of my PDF?`,
+          answer: `No. ${tool.name} processes byte streams locally in your browser memory via WebAssembly and Canvas APIs. No documents or data are transferred to external servers.`,
+        },
+        {
+          question: `Will page quality, font rendering, or text sharpness degrade?`,
+          answer: `Vector elements, high-resolution text layers, and embedded layout structures remain completely intact without lossy compression.`,
+        },
+        {
+          question: `Can I process password-protected PDF documents?`,
+          answer: `Yes, provided you provide the correct authorization password to decrypt and parse the document in local client RAM.`,
+        },
+        {
+          question: `Is there any page limit or restriction on document length?`,
+          answer: `Because processing runs client-side, the file capacity depends entirely on your machine's browser RAM rather than arbitrary server limits.`,
+        },
+      ];
+
+    case 'Image':
+    case 'Image Crop':
+      return [
+        {
+          question: `Does ${tool.name} preserve alpha transparency and color depth?`,
+          answer: `Yes, transparent alpha channels for PNG and WebP files are fully preserved alongside high dynamic range color coordinates.`,
+        },
+        {
+          question: `Is there an upload limit on image dimensions or megapixels?`,
+          answer: `No server ceiling exists. You can process high-resolution DSLR photos or large canvas graphics up to the browser memory allocation.`,
+        },
+        {
+          question: `Will my exported image contain any watermark or branding?`,
+          answer: `No. All rendered output graphics are 100% clean, unbranded, and suitable for direct commercial and personal publishing.`,
+        },
+        {
+          question: `Are EXIF metadata tags preserved during image processing?`,
+          answer: `Standard processing optimizes file payloads by stripping redundant metadata, but you can retain clean source pixels without visual degradation.`,
+        },
+      ];
+
+    case 'Finance':
+      return [
+        {
+          question: `How accurate are the formulas applied in ${tool.name}?`,
+          answer: `All figures follow standardized banking amortization, CAGR models, and standard compound growth interest algorithms.`,
+        },
+        {
+          question: `Are tax adjustments or inflation factored into these outputs?`,
+          answer: `Calculations represent nominal, pre-tax metrics. Pair these numbers with our Inflation Calculator to evaluate real purchasing power.`,
+        },
+        {
+          question: `Can I export or copy the calculation results for financial reports?`,
+          answer: `Yes, results can be copied directly with one click to transfer into spreadsheets, invoices, or budget planners.`,
+        },
+        {
+          question: `Does this calculator recommend specific investment products?`,
+          answer: `No. This utility functions strictly as a mathematical visualization engine and does not constitute certified financial advice.`,
+        },
+      ];
+
+    case 'Compiler':
+      return [
+        {
+          question: `How does ${tool.name} compile code without a remote server?`,
+          answer: `Execution runs locally using lightweight WebAssembly (WASM) and browser V8 JavaScript runtimes directly inside your browser tab.`,
+        },
+        {
+          question: `Can I make outbound network requests (API calls) from this runner?`,
+          answer: `Cross-origin sandbox policies prevent external socket calls to guarantee user security and local containment.`,
+        },
+        {
+          question: `What prevents my browser tab from hanging during heavy execution?`,
+          answer: `Execution handles thread isolation and automatic timeout limits to stop long or infinite computational loops safely.`,
+        },
+        {
+          question: `Is my source code or database query logged anywhere?`,
+          answer: `No. Code remains strictly in volatile client memory and is wiped clean as soon as the tab is refreshed.`,
+        },
+      ];
+
+    case 'Converters':
+    case 'Calculators':
+      return [
+        {
+          question: `Which measurement standards are used by ${tool.name}?`,
+          answer: `Calculations adhere strictly to International System of Units (SI) standards and standardized conversion factors.`,
+        },
+        {
+          question: `Can I run conversions offline without an active internet connection?`,
+          answer: `Yes. Once the web application is loaded in your browser cache, the conversion logic functions fully offline.`,
+        },
+        {
+          question: `What degree of fractional precision is maintained?`,
+          answer: `Outputs preserve high floating-point precision, rounded cleanly for display while avoiding common binary floating inaccuracies.`,
+        },
+        {
+          question: `Does ${tool.name} support negative or exponential values?`,
+          answer: `Yes, standard negative offsets (such as sub-zero temperatures) and large numerical values are parsed seamlessly.`,
+        },
+      ];
+
+    default: // Developer & Text Utilities
+      return [
+        {
+          question: `Is data entered into ${tool.name} recorded or sent to a database?`,
+          answer: `Never. String manipulations, token parsing, and encoding transformations execute strictly in client RAM and vanish on refresh.`,
+        },
+        {
+          question: `Does ${tool.name} support UTF-8, multi-byte languages, and emojis?`,
+          answer: `Yes. Full Unicode UTF-8 character sets, special symbols, and multi-byte language scripts are supported natively.`,
+        },
+        {
+          question: `Can I use ${tool.name} with sensitive tokens, keys, or JSON payloads?`,
+          answer: `Yes. Because zero network packets are dispatched during string parsing, your confidential keys remain entirely on your local machine.`,
+        },
+        {
+          question: `Does ${tool.name} provide 1-click clipboard integration?`,
+          answer: `Yes. Simply hit the copy button to transfer sanitized, converted, or encoded results straight to your system clipboard.`,
+        },
+      ];
+  }
+}
+
 export default function ToolPage({ params }: { params: { slug: string } }) {
   const tool = TOOLS_REGISTRY.find((t) => t.slug === params.slug);
 
@@ -64,25 +190,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
     (t) => t.slug !== tool.slug && t.category === tool.category
   ).slice(0, 3);
 
-  // Dynamic FAQs tailored specifically to tool context
-  const dynamicFaqs = [
-    {
-      question: `Is ${tool.name} free to use?`,
-      answer: `Yes, ${tool.name} is 100% free with unlimited usage, no account signup, and no subscription tiers.`
-    },
-    {
-      question: `Does ${tool.name} store or upload my private files or data?`,
-      answer: `No. ${tool.name} runs entirely inside your web browser using HTML5 Canvas, WebAssembly, and modern JavaScript engines. No files or inputs ever touch remote servers.`
-    },
-    {
-      question: `Can I use ${tool.name} on mobile devices?`,
-      answer: `Yes, TheToolsGenie is fully responsive. You can execute ${tool.name} on iOS, Android, macOS, Windows, or Linux browsers seamlessly.`
-    },
-    {
-      question: `What is the maximum file size or input limit for ${tool.name}?`,
-      answer: `Because processing occurs locally inside your device's memory (RAM), limits are defined solely by your browser's allocated memory rather than server bandwidth restrictions.`
-    }
-  ];
+  const dynamicFaqs = getCategoryFaqs(tool);
 
   const faqSchema = {
     '@context': 'https://schema.org',
@@ -119,7 +227,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
             </p>
           </div>
 
-          {/* 100% Active Universal Runner */}
+          {/* Tool Engine Runner */}
           <ToolEngineRunner tool={tool} />
 
           {/* Recommended Companion Tool */}
@@ -143,7 +251,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
             </section>
           )}
 
-         {/* Interactive FAQs Section - Clean Structured List */}
+          {/* FAQ Section with Clean Hierarchy */}
           <section className="mt-14 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-10 shadow-sm">
             <div className="flex items-center gap-2.5 mb-8 border-b border-zinc-100 dark:border-zinc-800 pb-5">
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-50 dark:bg-zinc-800 text-violet-600 dark:text-violet-400">
@@ -154,7 +262,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
                   Frequently Asked Questions
                 </h2>
                 <p className="text-xs text-zinc-400 font-medium">
-                  Common queries about {tool.name} security and runtime
+                  Common queries about {tool.name} security, data privacy, and usage limits
                 </p>
               </div>
             </div>
@@ -175,13 +283,16 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
               ))}
             </div>
           </section>
+
           {/* Related Tools */}
           {relatedTools.length > 0 && (
             <section className="mt-14">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-500">Related {tool.category} Utilities</h3>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-500">
+                  Related {tool.category} Utilities
+                </h3>
                 <Link href="/tools" className="text-xs font-semibold text-violet-600 dark:text-violet-400 hover:underline">
-                  Explore All 80 Tools →
+                  Explore All Tools →
                 </Link>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
