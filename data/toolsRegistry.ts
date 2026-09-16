@@ -1,123 +1,207 @@
 export interface ToolMeta {
   slug: string;
   name: string;
-  category: 'Compiler' | 'Finance' | 'YouTube' | 'Image Crop' | 'Image' | 'PDF' | 'Developer' | 'Text';
-  badge: string;
+  category: string;
   description: string;
-  keywords: string[];
+  badge: string;
   companionToolSlug: string;
   companionPitch: string;
 }
+
 export const CATEGORIES = [
   'All',
+  'PDF',
+  'Image',
   'Compiler',
   'Finance',
   'YouTube',
-  'Image Crop',
-  'Image',
-  'PDF',
   'Developer',
   'Text'
-] as const;
+];
+
 export const TOOLS_REGISTRY: ToolMeta[] = [
+  // --- PDF TOOLS ---
+  {
+    slug: 'merge-pdf',
+    name: 'Merge PDF Documents',
+    category: 'PDF',
+    description: 'Combine multiple PDF files into one clean document entirely within your browser.',
+    badge: 'Client Engine',
+    companionToolSlug: 'split-pdf-pages',
+    companionPitch: 'Need to extract or separate specific pages from your newly merged document?',
+  },
+  {
+    slug: 'split-pdf-pages',
+    name: 'Split PDF Pages',
+    category: 'PDF',
+    description: 'Separate individual pages or extract page ranges into independent PDF files.',
+    badge: 'Client Engine',
+    companionToolSlug: 'merge-pdf',
+    companionPitch: 'Combine specific extracted pages back together into a single file.',
+  },
+  {
+    slug: 'pdf-to-jpg-converter',
+    name: 'PDF to JPG Converter',
+    category: 'PDF',
+    description: 'Extract pages from your PDF document and save them as high-quality JPG images.',
+    badge: 'Canvas Engine',
+    companionToolSlug: 'client-image-compressor',
+    companionPitch: 'Compress the extracted JPG images to reduce storage size.',
+  },
+  {
+    slug: 'protect-pdf-password',
+    name: 'Protect & Lock PDF',
+    category: 'PDF',
+    description: 'Add secure password protection and encryption to your private PDF documents.',
+    badge: 'Security Engine',
+    companionToolSlug: 'merge-pdf',
+    companionPitch: 'Merge confidential files prior to applying encryption.',
+  },
+
+  // --- IMAGE TOOLS ---
+  {
+    slug: 'client-image-compressor',
+    name: 'Client Image Compressor',
+    category: 'Image',
+    description: 'Compress PNG, JPEG, and WebP files down to target KB directly in local memory.',
+    badge: 'Canvas Engine',
+    companionToolSlug: 'custom-freeform-image-cropper',
+    companionPitch: 'Crop and frame your image dimensions before optimizing file size.',
+  },
+  {
+    slug: 'custom-freeform-image-cropper',
+    name: 'Custom Image Cropper',
+    category: 'Image',
+    description: 'Crop images with preset aspect ratios (16:9, 1:1, 4:3) and custom boundaries.',
+    badge: 'Canvas Engine',
+    companionToolSlug: 'client-image-compressor',
+    companionPitch: 'Optimize the file size of your newly cropped image asset.',
+  },
+  {
+    slug: 'webp-to-png-converter',
+    name: 'WebP to PNG Converter',
+    category: 'Image',
+    description: 'Convert modern WebP images to universal transparent PNG format instantly.',
+    badge: 'Canvas Engine',
+    companionToolSlug: 'client-image-compressor',
+    companionPitch: 'Reduce the file footprint of your newly converted PNG.',
+  },
+  {
+    slug: 'svg-to-png-converter',
+    name: 'SVG to High-Res PNG',
+    category: 'Image',
+    description: 'Rasterize vector SVG files into crisp, high-resolution PNG images.',
+    badge: 'Vector Engine',
+    companionToolSlug: 'custom-freeform-image-cropper',
+    companionPitch: 'Crop your rasterized vector graphic for social media profiles.',
+  },
+
+  // --- COMPILER & RUNNER TOOLS ---
   {
     slug: 'online-python-compiler',
-    name: 'Online Python Compiler & Runner',
+    name: 'Online Python Runner',
     category: 'Compiler',
-    badge: 'Pyodide WASM',
-    description: 'Run Python 3 code with math and standard libraries directly in your browser. Zero cloud execution latency.',
-    keywords: ['online python compiler', 'run python in browser', 'free python ide online'],
-    companionToolSlug: 'json-prettifier',
-    companionPitch: 'Parsing API payloads from Python? Format and validate your JSON outputs instantly.'
+    description: 'Run Python 3 scripts with instant console output directly in your browser.',
+    badge: 'WASM Runner',
+    companionToolSlug: 'online-sql-sandbox',
+    companionPitch: 'Test SQLite relational queries to pair with your Python backend data.',
   },
   {
     slug: 'online-sql-sandbox',
-    name: 'Online SQL / MySQL Query Sandbox',
+    name: 'Online SQLite Sandbox',
     category: 'Compiler',
-    badge: 'SQLite WASM',
-    description: 'Execute SQL queries, test relational JOINs, and preview data tables locally with zero database server load.',
-    keywords: ['online sql compiler', 'run mysql online', 'browser sql sandbox'],
-    companionToolSlug: 'uuid-generator',
-    companionPitch: 'Need dummy unique keys for testing SQL inserts? Generate v4 UUID batches.'
+    description: 'Execute SQL queries, design database tables, and inspect relations with zero setup.',
+    badge: 'SQL Memory',
+    companionToolSlug: 'online-python-compiler',
+    companionPitch: 'Process your SQL output data inside the Python interactive sandbox.',
   },
   {
-    slug: 'sip-calculator',
-    name: 'SIP Wealth & Compounding Calculator',
+    slug: 'online-javascript-runner',
+    name: 'JavaScript Sandbox',
+    category: 'Compiler',
+    description: 'Execute modern ES6+ JavaScript code snippets with real-time console streaming.',
+    badge: 'V8 Engine',
+    companionToolSlug: 'json-prettifier-validator',
+    companionPitch: 'Format and inspect JSON data structures returned by your JS scripts.',
+  },
+
+  // --- DEVELOPER UTILITIES ---
+  {
+    slug: 'json-prettifier-validator',
+    name: 'JSON Prettifier & Validator',
+    category: 'Developer',
+    description: 'Format, validate syntax, and minify complex JSON trees with 1-click clipboard copy.',
+    badge: 'Parser Engine',
+    companionToolSlug: 'base64-encoder-decoder',
+    companionPitch: 'Encode formatted payload data into Base64 strings for network transmission.',
+  },
+  {
+    slug: 'base64-encoder-decoder',
+    name: 'Base64 Text & Data Encoder',
+    category: 'Developer',
+    description: 'Encode plain text or binary data into Base64 and decode Base64 strings safely.',
+    badge: 'Crypto Engine',
+    companionToolSlug: 'url-slug-generator',
+    companionPitch: 'Generate clean URL slugs for web assets alongside your encoded data.',
+  },
+  {
+    slug: 'url-slug-generator',
+    name: 'Clean URL Slug Generator',
+    category: 'Developer',
+    description: 'Convert headlines and strings into SEO-friendly, URL-safe kebab-case slugs.',
+    badge: 'Text Engine',
+    companionToolSlug: 'live-word-character-counter',
+    companionPitch: 'Verify total character count and word density of your slug titles.',
+  },
+
+  // --- FINANCE ENGINES ---
+  {
+    slug: 'sip-wealth-calculator',
+    name: 'SIP Wealth Calculator',
     category: 'Finance',
-    badge: 'Mathematical',
-    description: 'Calculate future wealth maturity, expected interest gains, and inflation projections on mutual fund SIP investments.',
-    keywords: ['sip calculator', 'mutual fund returns calculator', 'sip interest compounding'],
+    description: 'Calculate future wealth maturity, compounded interest gains, and returns ratio.',
+    badge: 'Finance Math',
     companionToolSlug: 'compound-interest-calculator',
-    companionPitch: 'Compare standard recurring equity compounding against lump-sum bank deposits.'
+    companionPitch: 'Calculate lump-sum annual compound interest on your accumulated wealth.',
   },
   {
     slug: 'compound-interest-calculator',
-    name: 'Compound Interest Schedule Calculator',
+    name: 'Compound Interest Calculator',
     category: 'Finance',
-    badge: 'Schedule Table',
-    description: 'Simulate annual, quarterly, and monthly compounding schedules with complete year-by-year amortization breakdown.',
-    keywords: ['compound interest calculator', 'interest compounding table', 'investment planner'],
-    companionToolSlug: 'sip-calculator',
-    companionPitch: 'Planning monthly systematic investments instead? Switch to SIP Wealth Planner.'
+    description: 'Simulate annual, quarterly, and monthly compounding schedules with growth projections.',
+    badge: 'Finance Math',
+    companionToolSlug: 'loan-emi-calculator',
+    companionPitch: 'Compare compounding returns against loan liabilities and interest payments.',
   },
   {
-    slug: 'youtube-thumbnail-grabber',
+    slug: 'loan-emi-calculator',
+    name: 'Loan EMI Calculator',
+    category: 'Finance',
+    description: 'Calculate monthly loan installments, principal breakdown, and interest costs.',
+    badge: 'Finance Math',
+    companionToolSlug: 'sip-wealth-calculator',
+    companionPitch: 'Invest your surplus monthly loan savings into a systematic wealth plan.',
+  },
+
+  // --- YOUTUBE & MEDIA TOOLS ---
+  {
+    slug: 'youtube-4k-thumbnail-grabber',
     name: 'YouTube 4K Thumbnail Grabber',
     category: 'YouTube',
-    badge: 'Direct CDN',
-    description: 'Extract pristine 1080p, 720p, and HD static covers from public videos with instant Canvas export.',
-    keywords: ['youtube thumbnail grabber', 'download youtube cover hd', 'get youtube thumbnail 4k'],
-    companionToolSlug: 'image-cropper',
-    companionPitch: 'Extracted thumbnail needs aspect adjustments? Crop to custom ratios in browser.'
+    description: 'Extract original 1080p, 720p, and HD static thumbnail covers from any video or Shorts link.',
+    badge: 'Media Engine',
+    companionToolSlug: 'client-image-compressor',
+    companionPitch: 'Compress the extracted high-res cover thumbnail for faster web embeds.',
   },
+
+  // --- TEXT UTILITIES ---
   {
-    slug: 'image-cropper',
-    name: 'Custom Freeform Image Cropper',
-    category: 'Image Crop',
-    badge: 'HTML5 Canvas',
-    description: 'Crop images with interactive bounding boxes, strict aspect presets (16:9, 1:1, 9:16), and instant local export.',
-    keywords: ['crop image online free', 'freeform photo cropper', 'canvas aspect ratio cropper'],
-    companionToolSlug: 'image-compressor',
-    companionPitch: 'Reduce file size after cropping without uploading photos to external servers.'
-  },
-  {
-    slug: 'image-compressor',
-    name: 'Client-Side Image Compressor',
-    category: 'Image',
-    badge: 'Zero Upload',
-    description: 'Compress PNG, JPEG, and WebP files down to 50KB or 100KB directly in memory using Web Workers.',
-    keywords: ['compress image without upload', 'reduce photo kb online', 'client side image optimizer'],
-    companionToolSlug: 'image-cropper',
-    companionPitch: 'Need to trim borders first? Crop your image before compressing.'
-  },
-  {
-    slug: 'merge-pdf',
-    name: 'Merge Multiple PDF Documents',
-    category: 'PDF',
-    badge: 'pdf-lib Local',
-    description: 'Combine multiple PDF files into one clean document entirely within browser memory with complete data privacy.',
-    keywords: ['merge pdf online free', 'combine pdf files browser', 'join pdf documents'],
-    companionToolSlug: 'word-counter',
-    companionPitch: 'Need to audit text volume or check character counts for documentation?'
-  },
-  {
-    slug: 'json-prettifier',
-    name: 'JSON Prettifier & Validator',
-    category: 'Developer',
-    badge: 'Instant AST',
-    description: 'Format unindented JSON payloads, validate syntax structures, and export clean minified code blocks.',
-    keywords: ['json prettifier', 'format json online', 'json syntax validator'],
-    companionToolSlug: 'online-python-compiler',
-    companionPitch: 'Testing scripts that consume this JSON? Run Python directly in browser.'
-  },
-  {
-    slug: 'word-counter',
+    slug: 'live-word-character-counter',
     name: 'Live Word & Character Counter',
     category: 'Text',
-    badge: 'Real-Time',
-    description: 'Audit word count, character density, sentence structures, and estimated reading time as you type.',
-    keywords: ['word counter online', 'character counter free', 'reading time estimator'],
-    companionToolSlug: 'json-prettifier',
-    companionPitch: 'Working with structured text or copy? Clean and format data structures.'
-  }
+    description: 'Real-time calculation of word density, character count, sentence length, and reading time.',
+    badge: 'Text Engine',
+    companionToolSlug: 'json-prettifier-validator',
+    companionPitch: 'Validate and format text payloads after checking length constraints.',
+  },
 ];
