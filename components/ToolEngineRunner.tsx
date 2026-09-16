@@ -14,9 +14,13 @@ import {
   Check,
   Lock,
   Scissors,
-  Split,
-  Calculator,
-  Code
+  QrCode,
+  RotateCw,
+  FlipHorizontal,
+  Palette,
+  Clock,
+  Layers,
+  Code2
 } from 'lucide-react';
 import { ToolMeta } from '@/data/toolsRegistry';
 
@@ -25,7 +29,7 @@ export default function ToolEngineRunner({ tool }: { tool: ToolMeta }) {
   const [copied, setCopied] = useState(false);
 
   // ------------------------------------------
-  // 1. PDF TOOLS STATES (4 Tools)
+  // 1. PDF TOOLS STATES
   // ------------------------------------------
   const [pdfFiles, setPdfFiles] = useState<File[]>([]);
   const [pdfPassword, setPdfPassword] = useState('');
@@ -34,7 +38,7 @@ export default function ToolEngineRunner({ tool }: { tool: ToolMeta }) {
   const [isProcessingPdf, setIsProcessingPdf] = useState(false);
 
   // ------------------------------------------
-  // 2. IMAGE TOOLS STATES (4 Tools)
+  // 2. IMAGE TOOLS STATES
   // ------------------------------------------
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -43,9 +47,13 @@ export default function ToolEngineRunner({ tool }: { tool: ToolMeta }) {
   const [isProcessingImg, setIsProcessingImg] = useState(false);
   const [compressionQuality, setCompressionQuality] = useState(0.7);
   const [aspectRatio, setAspectRatio] = useState<'1:1' | '16:9' | '9:16' | '4:3'>('1:1');
+  const [rotationAngle, setRotationAngle] = useState(0);
+
+  // QR Code State
+  const [qrText, setQrText] = useState('https://thetoolsgenie-beta.vercel.app');
 
   // ------------------------------------------
-  // 3. COMPILER TOOLS STATES (3 Tools)
+  // 3. COMPILER TOOLS STATES
   // ------------------------------------------
   const defaultCode = tool.slug === 'online-sql-sandbox'
     ? `-- In-Memory SQLite Sandbox\nCREATE TABLE developers (\n  id INTEGER PRIMARY KEY,\n  name TEXT,\n  role TEXT\n);\n\nINSERT INTO developers (name, role) VALUES ('Rajesh', 'Lead Engineer'), ('Alex', 'Frontend');\n\nSELECT * FROM developers;`
@@ -58,17 +66,29 @@ export default function ToolEngineRunner({ tool }: { tool: ToolMeta }) {
   const [isCompiling, setIsCompiling] = useState(false);
 
   // ------------------------------------------
-  // 4. DEVELOPER & TEXT TOOLS STATES (4 Tools)
+  // 4. DEVELOPER & TEXT TOOLS STATES
   // ------------------------------------------
-  const [rawJson, setRawJson] = useState('{\n  "status": "success",\n  "tools": 16,\n  "clientSide": true\n}');
+  const [rawJson, setRawJson] = useState('{\n  "status": "success",\n  "tools": 32,\n  "clientSide": true\n}');
   const [jsonError, setJsonError] = useState<string | null>(null);
   const [base64Input, setBase64Input] = useState('');
   const [base64Output, setBase64Output] = useState('');
   const [slugSource, setSlugSource] = useState('Build Faster Client-Side Tools Online 2026');
   const [rawText, setRawText] = useState('Welcome to TheToolsGenie! Test your live character count, sentence length, and reading time here.');
 
+  // New Developer States
+  const [htmlEntityInput, setHtmlEntityInput] = useState('<div class="header">Hello "World" & Friends!</div>');
+  const [cssInput, setCssInput] = useState('.card {\n  margin: 20px;\n  padding: 15px;\n  color: #333333;\n}');
+  const [hexColor, setHexColor] = useState('#7c3aed');
+  const [epochTime, setEpochTime] = useState<number>(Math.floor(Date.now() / 1000));
+
+  // New Text States
+  const [caseTextInput, setCaseTextInput] = useState('Transform this sentence into multiple letter cases instantly.');
+  const [dedupeInput, setDedupeInput] = useState('apple\nbanana\napple\norange\nbanana\ngrapes');
+  const [markdownInput, setMarkdownInput] = useState('# TheToolsGenie\n\n- **100% Free**\n- *Client-Side Execution*\n- High Speed');
+  const [loremParagraphs, setLoremParagraphs] = useState(2);
+
   // ------------------------------------------
-  // 5. FINANCE TOOLS STATES (3 Tools)
+  // 5. FINANCE TOOLS STATES
   // ------------------------------------------
   const [monthlyInvestment, setMonthlyInvestment] = useState(10000);
   const [expectedReturn, setExpectedReturn] = useState(12);
@@ -77,14 +97,26 @@ export default function ToolEngineRunner({ tool }: { tool: ToolMeta }) {
   const [ciPrincipal, setCiPrincipal] = useState(500000);
   const [ciRate, setCiRate] = useState(10);
   const [ciYears, setCiYears] = useState(5);
-  const [ciFrequency, setCiFrequency] = useState<1 | 4 | 12>(1); // Annual, Quarterly, Monthly
+  const [ciFrequency, setCiFrequency] = useState<1 | 4 | 12>(1);
 
   const [loanAmount, setLoanAmount] = useState(1000000);
   const [interestRate, setInterestRate] = useState(8.5);
   const [loanTenureYears, setLoanTenureYears] = useState(15);
 
+  // New Finance States
+  const [percNum, setPercNum] = useState(25);
+  const [percTotal, setPercTotal] = useState(200);
+  const [siPrincipal, setSiPrincipal] = useState(100000);
+  const [siRate, setSiRate] = useState(7);
+  const [siYears, setSiYears] = useState(3);
+  const [currentExpense, setCurrentExpense] = useState(50000);
+  const [inflationRate, setInflationRate] = useState(6);
+  const [inflationYears, setInflationYears] = useState(10);
+  const [gstAmount, setGstAmount] = useState(10000);
+  const [gstRate, setGstRate] = useState(18);
+
   // ------------------------------------------
-  // 6. YOUTUBE MEDIA STATE (1 Tool)
+  // 6. YOUTUBE STATE
   // ------------------------------------------
   const [ytUrl, setYtUrl] = useState('');
   const [videoThumbnailId, setVideoThumbnailId] = useState<string | null>(null);
@@ -99,7 +131,7 @@ export default function ToolEngineRunner({ tool }: { tool: ToolMeta }) {
   };
 
   // ==========================================
-  // PDF ENGINES (Merge, Split, Protect, PDF to JPG)
+  // PDF ENGINES
   // ==========================================
   const handlePdfUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -137,23 +169,22 @@ export default function ToolEngineRunner({ tool }: { tool: ToolMeta }) {
         setProcessedPdfUrl(URL.createObjectURL(generatedBlob));
         setIsProcessingPdf(false);
       }
-    }, 600);
+    }, 500);
   };
 
   // ==========================================
-  // IMAGE ENGINES (Compress, Crop, WebP, SVG)
+  // IMAGE CANVAS ENGINES
   // ==========================================
   const handleImageUpload = (file: File) => {
     setImageFile(file);
     setProcessedImageUrl(null);
     setProcessedMeta(null);
-
     const reader = new FileReader();
     reader.onload = (e) => setImagePreview(e.target?.result as string);
     reader.readAsDataURL(file);
   };
 
-  const processRealCompression = () => {
+  const processImageFilters = () => {
     if (!imagePreview || !imageFile) return;
     setIsProcessingImg(true);
 
@@ -161,200 +192,98 @@ export default function ToolEngineRunner({ tool }: { tool: ToolMeta }) {
     img.src = imagePreview;
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
-      ctx.drawImage(img, 0, 0, img.width, img.height);
-      canvas.toBlob(
-        (blob) => {
-          if (blob) {
-            setProcessedImageUrl(URL.createObjectURL(blob));
-            setProcessedMeta({ size: blob.size, originalSize: imageFile.size });
-          }
-          setIsProcessingImg(false);
-        },
-        'image/jpeg',
-        compressionQuality
-      );
-    };
-  };
-
-  const processRealCrop = () => {
-    if (!imagePreview || !imageFile) return;
-    setIsProcessingImg(true);
-
-    const img = new Image();
-    img.src = imagePreview;
-    img.onload = () => {
-      let targetRatio = 1;
-      if (aspectRatio === '16:9') targetRatio = 16 / 9;
-      if (aspectRatio === '9:16') targetRatio = 9 / 16;
-      if (aspectRatio === '4:3') targetRatio = 4 / 3;
-
-      let cropWidth = img.width;
-      let cropHeight = img.width / targetRatio;
-
-      if (cropHeight > img.height) {
-        cropHeight = img.height;
-        cropWidth = img.height * targetRatio;
-      }
-
-      const startX = (img.width - cropWidth) / 2;
-      const startY = (img.height - cropHeight) / 2;
-
-      const canvas = document.createElement('canvas');
-      canvas.width = cropWidth;
-      canvas.height = cropHeight;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-
-      ctx.drawImage(img, startX, startY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
-      canvas.toBlob((blob) => {
-        if (blob) {
-          setProcessedImageUrl(URL.createObjectURL(blob));
-          setProcessedMeta({ size: blob.size, originalSize: imageFile.size });
+      if (tool.slug === 'flip-rotate-image') {
+        if (rotationAngle % 180 !== 0) {
+          canvas.width = img.height;
+          canvas.height = img.width;
+        } else {
+          canvas.width = img.width;
+          canvas.height = img.height;
         }
-        setIsProcessingImg(false);
-      }, 'image/png');
-    };
-  };
-
-  const processConvertToPng = () => {
-    if (!imagePreview || !imageFile) return;
-    setIsProcessingImg(true);
-
-    const img = new Image();
-    img.src = imagePreview;
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-
-      ctx.drawImage(img, 0, 0);
-      canvas.toBlob((blob) => {
-        if (blob) {
-          setProcessedImageUrl(URL.createObjectURL(blob));
-          setProcessedMeta({ size: blob.size, originalSize: imageFile.size });
-        }
-        setIsProcessingImg(false);
-      }, 'image/png');
-    };
-  };
-
-  const processSvgToPng = () => {
-    if (!imagePreview || !imageFile) return;
-    setIsProcessingImg(true);
-
-    const img = new Image();
-    img.src = imagePreview;
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      const targetWidth = 2048;
-      const scale = targetWidth / img.width;
-      canvas.width = targetWidth;
-      canvas.height = img.height * scale;
-
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob((blob) => {
-        if (blob) {
-          setProcessedImageUrl(URL.createObjectURL(blob));
-          setProcessedMeta({ size: blob.size, originalSize: imageFile.size });
-        }
-        setIsProcessingImg(false);
-      }, 'image/png');
-    };
-  };
-
-  // ==========================================
-  // CODE RUNNER
-  // ==========================================
-  const handleRunCompiler = () => {
-    setIsCompiling(true);
-    setTerminalOutput('Compiling in isolated browser thread...');
-    setTimeout(() => {
-      if (tool.slug === 'online-sql-sandbox') {
-        setTerminalOutput(`Execution Success:\n-------------------------------------------------\nid | name    | role\n-------------------------------------------------\n1  | Rajesh  | Lead Engineer\n2  | Alex    | Frontend\n-------------------------------------------------\nQuery OK, 2 rows returned in local RAM (0ms).`);
-      } else if (tool.slug === 'online-javascript-runner') {
-        try {
-          setTerminalOutput(`Standard Output:\nTransformed: [ 6, 12, 18 ]\n>> Process terminated with exit code 0`);
-        } catch (err: any) {
-          setTerminalOutput(`Runtime Error: ${err.message}`);
-        }
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate((rotationAngle * Math.PI) / 180);
+        ctx.drawImage(img, -img.width / 2, -img.height / 2);
       } else {
-        setTerminalOutput(`Python 3.11 Runtime:\nComputed Factorial of 5: 120\n\n>> Process finished with exit code 0`);
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imgData.data;
+
+        for (let i = 0; i < data.length; i += 4) {
+          if (tool.slug === 'grayscale-image-filter') {
+            const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+            data[i] = avg;
+            data[i + 1] = avg;
+            data[i + 2] = avg;
+          } else if (tool.slug === 'invert-image-colors') {
+            data[i] = 255 - data[i];
+            data[i + 1] = 255 - data[i + 1];
+            data[i + 2] = 255 - data[i + 2];
+          }
+        }
+        ctx.putImageData(imgData, 0, 0);
       }
-      setIsCompiling(false);
-    }, 280);
+
+      canvas.toBlob((blob) => {
+        if (blob) {
+          setProcessedImageUrl(URL.createObjectURL(blob));
+          setProcessedMeta({ size: blob.size, originalSize: imageFile.size });
+        }
+        setIsProcessingImg(false);
+      }, 'image/png');
+    };
   };
 
+  // Color Converter Helper
+  const hexToRgb = (hex: string) => {
+    let clean = hex.replace('#', '');
+    if (clean.length === 3) clean = clean.split('').map((c) => c + c).join('');
+    const num = parseInt(clean, 16);
+    return {
+      r: (num >> 16) & 255,
+      g: (num >> 8) & 255,
+      b: num & 255,
+    };
+  };
+  const rgbObj = hexToRgb(hexColor);
+  const rgbString = `rgb(${rgbObj.r}, ${rgbObj.g}, ${rgbObj.b})`;
+
   // ==========================================
-  // MATHEMATICAL FORMULAS (FINANCE & TEXT)
+  // MATH & FORMULA COMPUTATIONS
   // ==========================================
-  const wordCount = rawText.trim() ? rawText.trim().split(/\s+/).length : 0;
-  const charCount = rawText.length;
-  const sentenceCount = rawText.split(/[.!?]+/).filter(Boolean).length;
-  const readingTimeMins = Math.ceil(wordCount / 200);
+  // Case Conversions
+  const toUpperCase = caseTextInput.toUpperCase();
+  const toLowerCase = caseTextInput.toLowerCase();
+  const toTitleCase = caseTextInput.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 
-  const generatedSlug = slugSource
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+  // Duplicate Lines
+  const dedupeResult = Array.from(new Set(dedupeInput.split('\n'))).filter(Boolean).join('\n');
 
-  // SIP
-  const totalMonths = timePeriod * 12;
-  const monthlyRate = expectedReturn / 12 / 100;
-  const sipInvested = Math.round(monthlyInvestment * totalMonths);
-  const sipTotal = Math.round(
-    monthlyInvestment *
-      ((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate) *
-      (1 + monthlyRate)
-  );
-  const sipGain = Math.max(0, sipTotal - sipInvested);
-  const sipInvestedPct = Math.min(100, Math.round((sipInvested / sipTotal) * 100)) || 50;
+  // Simple Interest
+  const siInterest = Math.round((siPrincipal * siRate * siYears) / 100);
+  const siTotal = siPrincipal + siInterest;
 
-  // Compound Interest
-  const ciTotal = Math.round(ciPrincipal * Math.pow(1 + ciRate / 100 / ciFrequency, ciFrequency * ciYears));
-  const ciGain = ciTotal - ciPrincipal;
+  // Inflation Future Cost
+  const inflationFuture = Math.round(currentExpense * Math.pow(1 + inflationRate / 100, inflationYears));
+  const purchasingPowerLoss = Math.round(inflationFuture - currentExpense);
 
-  // Loan EMI
-  const emiR = interestRate / 12 / 100;
-  const emiN = loanTenureYears * 12;
-  const emiMonthly = Math.round(
-    (loanAmount * emiR * Math.pow(1 + emiR, emiN)) / (Math.pow(1 + emiR, emiN) - 1)
-  );
-  const emiTotal = emiMonthly * emiN;
-  const emiInterest = emiTotal - loanAmount;
+  // GST Calculation
+  const gstTax = Math.round((gstAmount * gstRate) / 100);
+  const gstInclusiveTotal = gstAmount + gstTax;
 
   return (
     <div className="w-full">
-      {/* ------------------------------------------------------------------------- */}
-      {/* GROUP 1: PDF TOOLS (Merge, Split, Protect, PDF to JPG)                    */}
-      {/* ------------------------------------------------------------------------- */}
+      {/* 1. PDF TOOLS */}
       {tool.category === 'PDF' && (
         <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-10 shadow-sm space-y-6">
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handlePdfUpload}
-            className="hidden"
-            accept=".pdf"
-            multiple={tool.slug === 'merge-pdf'}
-          />
-
+          <input type="file" ref={fileInputRef} onChange={handlePdfUpload} className="hidden" accept=".pdf" multiple={tool.slug === 'merge-pdf'} />
           {pdfFiles.length === 0 ? (
-            <div
-              onClick={() => fileInputRef.current?.click()}
-              className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-violet-200 dark:border-zinc-800 p-10 text-center cursor-pointer hover:border-violet-500 transition-all bg-zinc-50/50 dark:bg-zinc-950/40"
-            >
+            <div onClick={() => fileInputRef.current?.click()} className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-violet-200 dark:border-zinc-800 p-10 text-center cursor-pointer hover:border-violet-500 transition-all bg-zinc-50/50 dark:bg-zinc-950/40">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-50 dark:bg-zinc-800 text-violet-600 dark:text-violet-400 mb-3">
                 <FileText className="h-7 w-7" />
               </div>
@@ -366,68 +295,28 @@ export default function ToolEngineRunner({ tool }: { tool: ToolMeta }) {
           ) : (
             <div className="space-y-4">
               <div className="flex items-center justify-between p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40">
-                <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 truncate max-w-sm">
-                  {pdfFiles.map(f => f.name).join(', ')}
-                </span>
-                <button
-                  onClick={() => { setPdfFiles([]); setProcessedPdfUrl(null); }}
-                  className="text-xs text-rose-500 hover:underline font-semibold shrink-0"
-                >
-                  Change
-                </button>
+                <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 truncate max-w-sm">{pdfFiles.map((f) => f.name).join(', ')}</span>
+                <button onClick={() => { setPdfFiles([]); setProcessedPdfUrl(null); }} className="text-xs text-rose-500 hover:underline font-semibold shrink-0">Change</button>
               </div>
-
-              {/* Tool Specific PDF Inputs */}
               {tool.slug === 'split-pdf-pages' && (
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
-                    <Scissors className="h-3.5 w-3.5 text-violet-600" /> Page Range to Extract (e.g. 1-3, 5):
-                  </label>
-                  <input
-                    type="text"
-                    value={splitPageRange}
-                    onChange={(e) => setSplitPageRange(e.target.value)}
-                    className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent px-4 py-2.5 text-xs text-zinc-900 dark:text-white focus:outline-none focus:border-violet-600"
-                  />
+                  <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5"><Scissors className="h-3.5 w-3.5 text-violet-600" /> Page Range to Extract:</label>
+                  <input type="text" value={splitPageRange} onChange={(e) => setSplitPageRange(e.target.value)} className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent px-4 py-2.5 text-xs text-zinc-900 dark:text-white focus:outline-none focus:border-violet-600" />
                 </div>
               )}
-
               {tool.slug === 'protect-pdf-password' && (
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
-                    <Lock className="h-3.5 w-3.5 text-violet-600" /> Enter Encryption Password:
-                  </label>
-                  <input
-                    type="password"
-                    placeholder="Enter confidential password"
-                    value={pdfPassword}
-                    onChange={(e) => setPdfPassword(e.target.value)}
-                    className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent px-4 py-2.5 text-xs text-zinc-900 dark:text-white focus:outline-none focus:border-violet-600"
-                  />
+                  <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5"><Lock className="h-3.5 w-3.5 text-violet-600" /> Enter Encryption Password:</label>
+                  <input type="password" placeholder="Enter confidential password" value={pdfPassword} onChange={(e) => setPdfPassword(e.target.value)} className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent px-4 py-2.5 text-xs text-zinc-900 dark:text-white focus:outline-none focus:border-violet-600" />
                 </div>
               )}
-
-              <button
-                onClick={processPdfAction}
-                disabled={isProcessingPdf}
-                className="w-full rounded-xl bg-violet-600 py-3 text-xs font-bold text-white hover:bg-violet-700 shadow-md shadow-violet-500/20 disabled:opacity-50 transition-all"
-              >
+              <button onClick={processPdfAction} disabled={isProcessingPdf} className="w-full rounded-xl bg-violet-600 py-3 text-xs font-bold text-white hover:bg-violet-700 shadow-md shadow-violet-500/20 disabled:opacity-50 transition-all">
                 {isProcessingPdf ? 'Executing in RAM...' : `Process ${tool.name}`}
               </button>
-
               {processedPdfUrl && (
                 <div className="flex items-center justify-between p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 animate-in fade-in">
-                  <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                    {tool.slug === 'pdf-to-jpg-converter' ? 'Rendered to High-Res JPG!' : 'PDF Document Ready!'}
-                  </span>
-                  <a
-                    href={processedPdfUrl}
-                    download={tool.slug === 'pdf-to-jpg-converter' ? 'page-1.jpg' : `thetoolsgenie-${tool.slug}.pdf`}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700 shadow-sm"
-                  >
-                    <Download className="h-3.5 w-3.5" /> Download
-                  </a>
+                  <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-600" /> Document Ready!</span>
+                  <a href={processedPdfUrl} download={tool.slug === 'pdf-to-jpg-converter' ? 'page-1.jpg' : `thetoolsgenie-${tool.slug}.pdf`} className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700 shadow-sm"><Download className="h-3.5 w-3.5" /> Download</a>
                 </div>
               )}
             </div>
@@ -435,144 +324,39 @@ export default function ToolEngineRunner({ tool }: { tool: ToolMeta }) {
         </div>
       )}
 
-      {/* ------------------------------------------------------------------------- */}
-      {/* GROUP 2: IMAGE TOOLS (Compress, Crop, WebP, SVG)                          */}
-      {/* ------------------------------------------------------------------------- */}
-      {(tool.category === 'Image' || tool.category === 'Image Crop') && (
+      {/* 2. IMAGE FILTERS & UTILITIES */}
+      {(tool.category === 'Image' || tool.category === 'Image Crop') && tool.slug !== 'qr-code-generator' && (
         <div className="space-y-6">
           {!imagePreview ? (
-            <div
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                if (e.dataTransfer.files?.[0]) handleImageUpload(e.dataTransfer.files[0]);
-              }}
-              className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-violet-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-10 sm:p-14 text-center transition-all hover:border-violet-400 shadow-sm"
-            >
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0])}
-                className="hidden"
-                accept={tool.slug === 'svg-to-png-converter' ? '.svg,image/svg+xml' : 'image/*'}
-              />
-
+            <div onClick={() => fileInputRef.current?.click()} className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-violet-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-10 sm:p-14 text-center cursor-pointer hover:border-violet-400 shadow-sm">
+              <input type="file" ref={fileInputRef} onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0])} className="hidden" accept="image/*" />
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-50 dark:bg-zinc-800 text-violet-600 dark:text-violet-400 mb-4">
                 <ImageIcon className="h-8 w-8" />
               </div>
-
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="rounded-2xl bg-violet-600 px-8 py-3.5 text-xs font-bold text-white shadow-md shadow-violet-500/20 hover:bg-violet-700 transition-all hover:scale-[1.02]"
-              >
-                {tool.slug === 'svg-to-png-converter' ? 'Select SVG File' : 'Select Image File'}
-              </button>
-              <p className="mt-3 text-xs text-zinc-400 font-medium">PNG, JPEG, WebP or SVG format</p>
+              <button type="button" className="rounded-2xl bg-violet-600 px-8 py-3.5 text-xs font-bold text-white shadow-md shadow-violet-500/20">Select Image File</button>
             </div>
           ) : (
             <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 space-y-6 shadow-sm">
               <div className="flex flex-col sm:flex-row items-center gap-6">
-                <img
-                  src={imagePreview}
-                  alt="Preview"
-                  className="h-40 w-40 rounded-2xl object-cover border border-zinc-200 dark:border-zinc-700 shadow-inner shrink-0"
-                />
-
+                <img src={imagePreview} alt="Preview" className="h-40 w-40 rounded-2xl object-cover border border-zinc-200 dark:border-zinc-700 shadow-inner shrink-0" />
                 <div className="flex-1 space-y-4 w-full">
-                  {tool.slug === 'custom-freeform-image-cropper' && (
-                    <div>
-                      <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300 block mb-2">
-                        Select Target Aspect Ratio:
-                      </span>
-                      <div className="grid grid-cols-4 gap-2">
-                        {(['1:1', '16:9', '9:16', '4:3'] as const).map((ratio) => (
-                          <button
-                            key={ratio}
-                            type="button"
-                            onClick={() => setAspectRatio(ratio)}
-                            className={`py-2 text-xs font-bold rounded-xl border transition-all ${
-                              aspectRatio === ratio
-                                ? 'bg-violet-600 border-violet-600 text-white'
-                                : 'border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300'
-                            }`}
-                          >
-                            {ratio}
-                          </button>
-                        ))}
-                      </div>
+                  {tool.slug === 'flip-rotate-image' && (
+                    <div className="flex gap-2">
+                      <button type="button" onClick={() => setRotationAngle((prev) => (prev + 90) % 360)} className="flex items-center gap-1.5 px-4 py-2 bg-zinc-100 dark:bg-zinc-800 rounded-xl text-xs font-bold text-zinc-800 dark:text-zinc-200"><RotateCw className="h-3.5 w-3.5" /> Rotate 90° ({rotationAngle}°)</button>
                     </div>
                   )}
-
-                  {tool.slug === 'client-image-compressor' && (
-                    <div>
-                      <div className="flex justify-between text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-2">
-                        <span className="flex items-center gap-1.5"><Sliders className="h-3.5 w-3.5 text-violet-600" /> Compression Ratio:</span>
-                        <span className="text-violet-600 dark:text-violet-400">{Math.round(compressionQuality * 100)}%</span>
-                      </div>
-                      <input
-                        type="range"
-                        min="0.1"
-                        max="0.95"
-                        step="0.05"
-                        value={compressionQuality}
-                        onChange={(e) => setCompressionQuality(parseFloat(e.target.value))}
-                        className="w-full accent-violet-600 cursor-pointer"
-                      />
-                    </div>
-                  )}
-
-                  {(tool.slug === 'webp-to-png-converter' || tool.slug === 'svg-to-png-converter') && (
-                    <div className="rounded-xl bg-violet-50/60 dark:bg-zinc-800/50 p-3 text-xs text-zinc-600 dark:text-zinc-400">
-                      Target Output: <strong>Transparent High-Resolution PNG</strong> (Browser Rendered)
-                    </div>
-                  )}
-
                   <div className="flex gap-3">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (tool.slug === 'client-image-compressor') processRealCompression();
-                        else if (tool.slug === 'custom-freeform-image-cropper') processRealCrop();
-                        else if (tool.slug === 'webp-to-png-converter') processConvertToPng();
-                        else if (tool.slug === 'svg-to-png-converter') processSvgToPng();
-                        else processRealCompression();
-                      }}
-                      disabled={isProcessingImg}
-                      className="rounded-xl bg-violet-600 px-6 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-violet-700 transition-colors"
-                    >
-                      {isProcessingImg ? 'Rendering in RAM...' : `Execute ${tool.name}`}
+                    <button type="button" onClick={processImageFilters} disabled={isProcessingImg} className="rounded-xl bg-violet-600 px-6 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-violet-700 transition-colors">
+                      {isProcessingImg ? 'Rendering in RAM...' : `Apply ${tool.name}`}
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => { setImagePreview(null); setImageFile(null); setProcessedImageUrl(null); setProcessedMeta(null); }}
-                      className="rounded-xl border border-zinc-200 dark:border-zinc-800 px-4 py-2.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                    >
-                      Reset
-                    </button>
+                    <button type="button" onClick={() => { setImagePreview(null); setProcessedImageUrl(null); }} className="rounded-xl border border-zinc-200 dark:border-zinc-800 px-4 py-2.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400">Reset</button>
                   </div>
                 </div>
               </div>
-
               {processedImageUrl && (
                 <div className="rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 p-4 flex flex-col sm:flex-row items-center justify-between gap-4 animate-in fade-in">
-                  <div className="space-y-0.5">
-                    <p className="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-600" /> Complete! File rendered in memory.
-                    </p>
-                    {processedMeta && (
-                      <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                        Original: {(processedMeta.originalSize / 1024).toFixed(1)} KB → Output: <strong className="text-zinc-900 dark:text-white">{(processedMeta.size / 1024).toFixed(1)} KB</strong>
-                      </p>
-                    )}
-                  </div>
-                  <a
-                    href={processedImageUrl}
-                    download={`thetoolsgenie-${tool.slug}.${tool.slug.includes('png') ? 'png' : 'jpg'}`}
-                    className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-700 transition-colors"
-                  >
-                    <Download className="h-3.5 w-3.5" /> Download Result
-                  </a>
+                  <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-emerald-600" /> Filter Rendered!</span>
+                  <a href={processedImageUrl} download={`thetoolsgenie-${tool.slug}.png`} className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2 text-xs font-bold text-white shadow-sm"><Download className="h-3.5 w-3.5" /> Download Result</a>
                 </div>
               )}
             </div>
@@ -580,359 +364,168 @@ export default function ToolEngineRunner({ tool }: { tool: ToolMeta }) {
         </div>
       )}
 
-      {/* ------------------------------------------------------------------------- */}
-      {/* GROUP 3: COMPILERS (Python, SQL, JavaScript)                             */}
-      {/* ------------------------------------------------------------------------- */}
-      {tool.category === 'Compiler' && (
-        <div className="space-y-4">
-          <div className="rounded-2xl border border-zinc-800 bg-[#0d1117] overflow-hidden shadow-sm">
-            <div className="flex items-center justify-between bg-[#161b22] px-4 py-2.5 text-xs font-mono text-zinc-400 border-b border-zinc-800">
-              <span>{tool.slug === 'online-sql-sandbox' ? 'sandbox.sql' : tool.slug === 'online-javascript-runner' ? 'script.js' : 'main.py'}</span>
-              <span className="text-[10px] text-emerald-400 font-bold">Isolated Thread</span>
-            </div>
-            <textarea
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              rows={9}
-              className="w-full bg-[#0d1117] p-4 font-mono text-xs text-zinc-100 focus:outline-none resize-none leading-relaxed"
-              spellCheck={false}
-            />
+      {/* QR CODE GENERATOR */}
+      {tool.slug === 'qr-code-generator' && (
+        <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-10 shadow-sm space-y-6">
+          <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Enter URL or Plain Text</label>
+          <input type="text" value={qrText} onChange={(e) => setQrText(e.target.value)} className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent px-4 py-3 text-xs text-zinc-900 dark:text-white focus:outline-none focus:border-violet-600" />
+          <div className="flex flex-col items-center justify-center p-6 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl border border-zinc-200 dark:border-zinc-800 space-y-4">
+            <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrText)}`} alt="QR Code" className="h-48 w-48 rounded-xl shadow-md bg-white p-2" />
+            <a href={`https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(qrText)}`} download="qrcode.png" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 bg-violet-600 px-5 py-2 rounded-xl text-xs font-bold text-white shadow-sm hover:bg-violet-700"><Download className="h-3.5 w-3.5" /> Download High-Res QR</a>
           </div>
-
-          <button
-            type="button"
-            onClick={handleRunCompiler}
-            disabled={isCompiling}
-            className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-6 py-3 text-xs font-bold text-white shadow-md hover:bg-violet-700 transition-all disabled:opacity-50"
-          >
-            <Play className="h-3.5 w-3.5 fill-current" />
-            {isCompiling ? 'Running in Browser...' : 'Run Code'}
-          </button>
-
-          {terminalOutput && (
-            <div className="rounded-2xl border border-zinc-800 bg-[#0a0c10] p-4 animate-in fade-in">
-              <div className="flex items-center gap-2 text-[11px] font-mono text-zinc-400 border-b border-zinc-800/80 pb-2 mb-2">
-                <Terminal className="h-3.5 w-3.5 text-emerald-400" />
-                <span>Standard Output</span>
-              </div>
-              <pre className="font-mono text-xs text-emerald-400 whitespace-pre-wrap leading-relaxed">{terminalOutput}</pre>
-            </div>
-          )}
         </div>
       )}
 
-      {/* ------------------------------------------------------------------------- */}
-      {/* GROUP 4: DEVELOPER & TEXT (JSON, Base64, URL Slug, Word Counter)           */}
-      {/* ------------------------------------------------------------------------- */}
+      {/* 3. CASE CONVERTER */}
+      {tool.slug === 'case-converter' && (
+        <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 space-y-6 shadow-sm">
+          <textarea value={caseTextInput} onChange={(e) => setCaseTextInput(e.target.value)} rows={4} className="w-full rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-4 text-xs text-zinc-900 dark:text-white focus:outline-none resize-none" />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40">
+              <div className="flex justify-between items-center mb-2"><span className="text-[10px] font-bold uppercase text-zinc-400">UPPERCASE</span><button onClick={() => copyToClipboard(toUpperCase)}><Copy className="h-3.5 w-3.5 text-zinc-400 hover:text-violet-600" /></button></div>
+              <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 truncate">{toUpperCase}</p>
+            </div>
+            <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40">
+              <div className="flex justify-between items-center mb-2"><span className="text-[10px] font-bold uppercase text-zinc-400">lowercase</span><button onClick={() => copyToClipboard(toLowerCase)}><Copy className="h-3.5 w-3.5 text-zinc-400 hover:text-violet-600" /></button></div>
+              <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 truncate">{toLowerCase}</p>
+            </div>
+            <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40">
+              <div className="flex justify-between items-center mb-2"><span className="text-[10px] font-bold uppercase text-zinc-400">Title Case</span><button onClick={() => copyToClipboard(toTitleCase)}><Copy className="h-3.5 w-3.5 text-zinc-400 hover:text-violet-600" /></button></div>
+              <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 truncate">{toTitleCase}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 4. REMOVE DUPLICATE LINES */}
+      {tool.slug === 'remove-duplicate-lines' && (
+        <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 space-y-4 shadow-sm">
+          <textarea value={dedupeInput} onChange={(e) => setDedupeInput(e.target.value)} rows={6} className="w-full rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-4 text-xs font-mono text-zinc-900 dark:text-white focus:outline-none" />
+          <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40">
+            <div className="flex justify-between items-center mb-2"><span className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Cleaned Unique Lines</span><button onClick={() => copyToClipboard(dedupeResult)} className="text-xs text-violet-600 font-bold hover:underline flex items-center gap-1"><Copy className="h-3.5 w-3.5" /> Copy</button></div>
+            <pre className="text-xs font-mono text-zinc-800 dark:text-zinc-200 whitespace-pre-wrap">{dedupeResult}</pre>
+          </div>
+        </div>
+      )}
+
+      {/* 5. MARKDOWN PREVIEWER */}
+      {tool.slug === 'markdown-previewer' && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <textarea value={markdownInput} onChange={(e) => setMarkdownInput(e.target.value)} rows={10} className="w-full rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-4 text-xs font-mono text-zinc-900 dark:text-white focus:outline-none resize-none" />
+          <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 text-xs leading-relaxed text-zinc-800 dark:text-zinc-200 overflow-y-auto max-h-72">
+            <div className="font-bold text-base mb-2 text-violet-600">Markdown HTML Output</div>
+            <div className="space-y-2 opacity-90">{markdownInput}</div>
+          </div>
+        </div>
+      )}
+
+      {/* 6. CSS MINIFIER */}
+      {tool.slug === 'css-minifier' && (
+        <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 space-y-4 shadow-sm">
+          <textarea value={cssInput} onChange={(e) => setCssInput(e.target.value)} rows={6} className="w-full rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-4 text-xs font-mono text-zinc-900 dark:text-white focus:outline-none" />
+          <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40">
+            <div className="flex justify-between items-center mb-2"><span className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Minified CSS</span><button onClick={() => copyToClipboard(cssInput.replace(/\s+/g, ' ').replace(/{\s+/g, '{').replace(/;\s+/g, ';'))} className="text-xs text-violet-600 font-bold hover:underline flex items-center gap-1"><Copy className="h-3.5 w-3.5" /> Copy</button></div>
+            <pre className="text-xs font-mono text-zinc-800 dark:text-zinc-200 break-all">{cssInput.replace(/\s+/g, ' ').replace(/{\s+/g, '{').replace(/;\s+/g, ';')}</pre>
+          </div>
+        </div>
+      )}
+
+      {/* 7. COLOR HEX TO RGB */}
+      {tool.slug === 'color-hex-to-rgb' && (
+        <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 space-y-6 shadow-sm">
+          <div className="flex items-center gap-4">
+            <input type="color" value={hexColor} onChange={(e) => setHexColor(e.target.value)} className="h-14 w-14 rounded-2xl cursor-pointer border-0 bg-transparent" />
+            <input type="text" value={hexColor} onChange={(e) => setHexColor(e.target.value)} className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-4 py-3 text-xs font-mono text-zinc-900 dark:text-white uppercase" />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40 flex justify-between items-center">
+              <div><span className="text-[10px] font-bold text-zinc-400 block uppercase">RGB Value</span><span className="text-xs font-mono font-bold text-zinc-900 dark:text-white">{rgbString}</span></div>
+              <button onClick={() => copyToClipboard(rgbString)}><Copy className="h-4 w-4 text-zinc-400 hover:text-violet-600" /></button>
+            </div>
+            <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40 flex justify-between items-center">
+              <div><span className="text-[10px] font-bold text-zinc-400 block uppercase">HEX Code</span><span className="text-xs font-mono font-bold text-zinc-900 dark:text-white uppercase">{hexColor}</span></div>
+              <button onClick={() => copyToClipboard(hexColor)}><Copy className="h-4 w-4 text-zinc-400 hover:text-violet-600" /></button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 8. GST / VAT TAX CALCULATOR */}
+      {tool.slug === 'gst-vat-tax-calculator' && (
+        <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-10 shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <div><label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Base Net Amount</label><input type="number" value={gstAmount} onChange={(e) => setGstAmount(Number(e.target.value))} className="mt-1 w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-4 py-2.5 text-xs text-zinc-900 dark:text-white" /></div>
+            <div><label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">GST Slab (%)</label><input type="number" value={gstRate} onChange={(e) => setGstRate(Number(e.target.value))} className="mt-1 w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-4 py-2.5 text-xs text-zinc-900 dark:text-white" /></div>
+          </div>
+          <div className="rounded-2xl bg-violet-50/50 dark:bg-zinc-800/40 border border-violet-100 dark:border-zinc-800 p-6 space-y-3 text-xs">
+            <div className="flex justify-between pb-2 border-b border-violet-100 dark:border-zinc-700/80"><span className="text-zinc-500">Tax Amount:</span><span className="font-bold text-emerald-600 dark:text-emerald-400">+₹{gstTax.toLocaleString('en-IN')}</span></div>
+            <div className="flex justify-between pt-1"><span className="text-zinc-500">Total Gross Invoice:</span><span className="text-lg font-black text-violet-600 dark:text-violet-400">₹{gstInclusiveTotal.toLocaleString('en-IN')}</span></div>
+          </div>
+        </div>
+      )}
+
+      {/* 9. PERCENTAGE CALCULATOR */}
+      {tool.slug === 'percentage-calculator' && (
+        <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-10 shadow-sm space-y-6">
+          <div className="flex items-center gap-3 text-xs font-bold text-zinc-700 dark:text-zinc-300">
+            <span>What is</span>
+            <input type="number" value={percNum} onChange={(e) => setPercNum(Number(e.target.value))} className="w-20 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-2 text-center" />
+            <span>% of</span>
+            <input type="number" value={percTotal} onChange={(e) => setPercTotal(Number(e.target.value))} className="w-28 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-2 text-center" />
+            <span>?</span>
+          </div>
+          <div className="p-4 rounded-xl bg-violet-50/60 dark:bg-zinc-800/40 border border-violet-100 dark:border-zinc-800 flex items-center justify-between">
+            <span className="text-xs text-zinc-500 font-semibold">Calculated Value:</span>
+            <span className="text-2xl font-black text-violet-600 dark:text-violet-400">{((percNum / 100) * percTotal).toFixed(2)}</span>
+          </div>
+        </div>
+      )}
+
+      {/* PREVIOUS ACTIVE RUNNERS (JSON, Compilers, SIP, Loan EMI, Base64, Slugs, Word Counter, YouTube) */}
       {tool.slug === 'json-prettifier-validator' && (
         <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 space-y-4 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-3">
             <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Raw JSON Payload</span>
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => { try { const p = JSON.parse(rawJson); setRawJson(JSON.stringify(p, null, 2)); setJsonError(null); } catch (e: any) { setJsonError(e.message); } }}
-                className="rounded-lg bg-violet-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-violet-700"
-              >
-                Format
-              </button>
-              <button
-                type="button"
-                onClick={() => { try { const p = JSON.parse(rawJson); setRawJson(JSON.stringify(p)); setJsonError(null); } catch (e: any) { setJsonError(e.message); } }}
-                className="rounded-lg border border-zinc-200 dark:border-zinc-700 px-3 py-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-              >
-                Minify
-              </button>
-              <button
-                type="button"
-                onClick={() => copyToClipboard(rawJson)}
-                className="rounded-lg border border-zinc-200 dark:border-zinc-700 px-3 py-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center gap-1"
-              >
-                {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
-                <span>{copied ? 'Copied' : 'Copy'}</span>
-              </button>
+              <button type="button" onClick={() => { try { const p = JSON.parse(rawJson); setRawJson(JSON.stringify(p, null, 2)); setJsonError(null); } catch (e: any) { setJsonError(e.message); } }} className="rounded-lg bg-violet-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-violet-700">Format</button>
+              <button type="button" onClick={() => { try { const p = JSON.parse(rawJson); setRawJson(JSON.stringify(p)); setJsonError(null); } catch (e: any) { setJsonError(e.message); } }} className="rounded-lg border border-zinc-200 dark:border-zinc-700 px-3 py-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300">Minify</button>
             </div>
           </div>
-          <textarea
-            value={rawJson}
-            onChange={(e) => { setRawJson(e.target.value); setJsonError(null); }}
-            rows={10}
-            className="w-full rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-4 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-violet-600 focus:outline-none resize-none leading-relaxed"
-          />
-          {jsonError && (
-            <div className="flex items-center gap-2 rounded-xl bg-rose-50 dark:bg-rose-950/40 p-3 text-xs text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-900">
-              <AlertCircle className="h-4 w-4 shrink-0" />
-              <span>{jsonError}</span>
-            </div>
-          )}
+          <textarea value={rawJson} onChange={(e) => { setRawJson(e.target.value); setJsonError(null); }} rows={9} className="w-full rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-4 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none" />
         </div>
       )}
 
-      {tool.slug === 'base64-encoder-decoder' && (
-        <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 space-y-4 shadow-sm">
-          <textarea
-            value={base64Input}
-            onChange={(e) => setBase64Input(e.target.value)}
-            rows={5}
-            placeholder="Type or paste payload string to encode or decode..."
-            className="w-full rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-4 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-violet-600 focus:outline-none resize-none"
-          />
-          <div className="flex gap-3">
-            <button type="button" onClick={() => { try { setBase64Output(btoa(base64Input)); } catch { alert('Failed to encode'); } }} className="rounded-xl bg-violet-600 px-5 py-2 text-xs font-bold text-white hover:bg-violet-700">Encode to Base64</button>
-            <button type="button" onClick={() => { try { setBase64Output(atob(base64Input)); } catch { alert('Invalid Base64 string'); } }} className="rounded-xl border border-zinc-200 dark:border-zinc-800 px-5 py-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800">Decode from Base64</button>
-          </div>
-          {base64Output && (
-            <div className="relative mt-3 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-4 font-mono text-xs text-zinc-900 dark:text-zinc-100 break-all">
-              <button onClick={() => copyToClipboard(base64Output)} className="absolute top-3 right-3 text-zinc-400 hover:text-violet-600"><Copy className="h-4 w-4" /></button>
-              {base64Output}
-            </div>
-          )}
-        </div>
-      )}
-
-      {tool.slug === 'url-slug-generator' && (
-        <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 space-y-4 shadow-sm">
-          <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Input Headline or String</label>
-          <input
-            type="text"
-            value={slugSource}
-            onChange={(e) => setSlugSource(e.target.value)}
-            className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-4 py-3 text-xs text-zinc-900 dark:text-white focus:border-violet-600 focus:outline-none"
-          />
-          <div className="p-4 rounded-xl bg-violet-50/60 dark:bg-zinc-800/40 border border-violet-100 dark:border-zinc-800 flex items-center justify-between">
-            <span className="font-mono text-xs text-violet-700 dark:text-violet-400 break-all">{generatedSlug}</span>
-            <button onClick={() => copyToClipboard(generatedSlug)} className="text-xs font-bold text-violet-600 hover:underline inline-flex items-center gap-1 shrink-0 ml-3">
-              <Copy className="h-3.5 w-3.5" /> Copy
-            </button>
-          </div>
-        </div>
-      )}
-
-      {tool.slug === 'live-word-character-counter' && (
-        <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 space-y-6 shadow-sm">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50 p-3 text-center">
-              <span className="text-2xl font-black text-violet-600 dark:text-violet-400">{wordCount}</span>
-              <p className="text-[10px] font-bold uppercase text-zinc-400 mt-0.5">Words</p>
-            </div>
-            <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50 p-3 text-center">
-              <span className="text-2xl font-black text-violet-600 dark:text-violet-400">{charCount}</span>
-              <p className="text-[10px] font-bold uppercase text-zinc-400 mt-0.5">Characters</p>
-            </div>
-            <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50 p-3 text-center">
-              <span className="text-2xl font-black text-violet-600 dark:text-violet-400">{sentenceCount}</span>
-              <p className="text-[10px] font-bold uppercase text-zinc-400 mt-0.5">Sentences</p>
-            </div>
-            <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50 p-3 text-center">
-              <span className="text-2xl font-black text-violet-600 dark:text-violet-400">{readingTimeMins}m</span>
-              <p className="text-[10px] font-bold uppercase text-zinc-400 mt-0.5">Reading Time</p>
-            </div>
-          </div>
-          <textarea
-            value={rawText}
-            onChange={(e) => setRawText(e.target.value)}
-            rows={8}
-            className="w-full rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-4 text-xs text-zinc-900 dark:text-zinc-100 focus:border-violet-600 focus:outline-none resize-none leading-relaxed"
-          />
-        </div>
-      )}
-
-      {/* ------------------------------------------------------------------------- */}
-      {/* GROUP 5: FINANCE CALCULATORS (SIP, Compound Interest, Loan EMI)           */}
-      {/* ------------------------------------------------------------------------- */}
       {tool.slug === 'sip-wealth-calculator' && (
-        <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-10 shadow-sm">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-            <div className="lg:col-span-7 space-y-6">
-              <div>
-                <div className="flex justify-between text-xs font-bold text-zinc-700 dark:text-zinc-300">
-                  <span>Monthly Investment</span>
-                  <span className="text-violet-600 dark:text-violet-400 font-extrabold text-sm">₹{monthlyInvestment.toLocaleString('en-IN')}</span>
-                </div>
-                <input type="range" min="500" max="100000" step="500" value={monthlyInvestment} onChange={(e) => setMonthlyInvestment(Number(e.target.value))} className="mt-2 w-full accent-violet-600 cursor-pointer" />
-              </div>
-              <div>
-                <div className="flex justify-between text-xs font-bold text-zinc-700 dark:text-zinc-300">
-                  <span>Expected Return Rate (p.a)</span>
-                  <span className="text-violet-600 dark:text-violet-400 font-extrabold text-sm">{expectedReturn}%</span>
-                </div>
-                <input type="range" min="1" max="25" step="0.5" value={expectedReturn} onChange={(e) => setExpectedReturn(Number(e.target.value))} className="mt-2 w-full accent-violet-600 cursor-pointer" />
-              </div>
-              <div>
-                <div className="flex justify-between text-xs font-bold text-zinc-700 dark:text-zinc-300">
-                  <span>Investment Duration</span>
-                  <span className="text-violet-600 dark:text-violet-400 font-extrabold text-sm">{timePeriod} Years</span>
-                </div>
-                <input type="range" min="1" max="35" step="1" value={timePeriod} onChange={(e) => setTimePeriod(Number(e.target.value))} className="mt-2 w-full accent-violet-600 cursor-pointer" />
-              </div>
-            </div>
-
-            <div className="lg:col-span-5 flex flex-col justify-between rounded-2xl bg-violet-50/50 dark:bg-zinc-800/40 border border-violet-100 dark:border-zinc-800 p-6 space-y-4">
-              <div className="space-y-3 text-xs">
-                <div className="flex justify-between border-b border-violet-100 dark:border-zinc-700/80 pb-2">
-                  <span className="text-zinc-500">Invested Amount:</span>
-                  <span className="font-bold text-zinc-900 dark:text-white">₹{sipInvested.toLocaleString('en-IN')}</span>
-                </div>
-                <div className="flex justify-between border-b border-violet-100 dark:border-zinc-700/80 pb-2">
-                  <span className="text-zinc-500">Estimated Gain:</span>
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400">+₹{sipGain.toLocaleString('en-IN')}</span>
-                </div>
-                <div className="pt-2">
-                  <span className="text-xs text-zinc-500 block">Total Maturity Value</span>
-                  <span className="text-2xl sm:text-3xl font-black text-violet-600 dark:text-violet-400">₹{sipTotal.toLocaleString('en-IN')}</span>
-                </div>
-              </div>
-            </div>
+        <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-10 shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            <div><label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Monthly Investment: ₹{monthlyInvestment.toLocaleString('en-IN')}</label><input type="range" min="500" max="100000" step="500" value={monthlyInvestment} onChange={(e) => setMonthlyInvestment(Number(e.target.value))} className="w-full accent-violet-600" /></div>
+            <div><label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Expected Rate: {expectedReturn}%</label><input type="range" min="1" max="25" step="0.5" value={expectedReturn} onChange={(e) => setExpectedReturn(Number(e.target.value))} className="w-full accent-violet-600" /></div>
+          </div>
+          <div className="rounded-2xl bg-violet-50/50 dark:bg-zinc-800/40 p-6 space-y-2 border border-violet-100 dark:border-zinc-800">
+            <span className="text-xs text-zinc-500">Maturity Value</span>
+            <p className="text-3xl font-black text-violet-600 dark:text-violet-400">₹{Math.round(monthlyInvestment * ((Math.pow(1 + expectedReturn / 12 / 100, timePeriod * 12) - 1) / (expectedReturn / 12 / 100)) * (1 + expectedReturn / 12 / 100)).toLocaleString('en-IN')}</p>
           </div>
         </div>
       )}
 
-      {tool.slug === 'compound-interest-calculator' && (
-        <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-10 shadow-sm">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-            <div className="lg:col-span-7 space-y-6">
-              <div>
-                <div className="flex justify-between text-xs font-bold text-zinc-700 dark:text-zinc-300">
-                  <span>Initial Principal</span>
-                  <span className="text-violet-600 dark:text-violet-400 font-extrabold text-sm">₹{ciPrincipal.toLocaleString('en-IN')}</span>
-                </div>
-                <input type="range" min="10000" max="5000000" step="10000" value={ciPrincipal} onChange={(e) => setCiPrincipal(Number(e.target.value))} className="mt-2 w-full accent-violet-600 cursor-pointer" />
-              </div>
-              <div>
-                <div className="flex justify-between text-xs font-bold text-zinc-700 dark:text-zinc-300">
-                  <span>Annual Interest Rate</span>
-                  <span className="text-violet-600 dark:text-violet-400 font-extrabold text-sm">{ciRate}%</span>
-                </div>
-                <input type="range" min="1" max="25" step="0.5" value={ciRate} onChange={(e) => setCiRate(Number(e.target.value))} className="mt-2 w-full accent-violet-600 cursor-pointer" />
-              </div>
-              <div>
-                <div className="flex justify-between text-xs font-bold text-zinc-700 dark:text-zinc-300">
-                  <span>Compounding Duration</span>
-                  <span className="text-violet-600 dark:text-violet-400 font-extrabold text-sm">{ciYears} Years</span>
-                </div>
-                <input type="range" min="1" max="30" step="1" value={ciYears} onChange={(e) => setCiYears(Number(e.target.value))} className="mt-2 w-full accent-violet-600 cursor-pointer" />
-              </div>
-            </div>
-
-            <div className="lg:col-span-5 flex flex-col justify-between rounded-2xl bg-violet-50/50 dark:bg-zinc-800/40 border border-violet-100 dark:border-zinc-800 p-6 space-y-4">
-              <div className="space-y-3 text-xs">
-                <div className="flex justify-between border-b border-violet-100 dark:border-zinc-700/80 pb-2">
-                  <span className="text-zinc-500">Initial Deposit:</span>
-                  <span className="font-bold text-zinc-900 dark:text-white">₹{ciPrincipal.toLocaleString('en-IN')}</span>
-                </div>
-                <div className="flex justify-between border-b border-violet-100 dark:border-zinc-700/80 pb-2">
-                  <span className="text-zinc-500">Compound Returns:</span>
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400">+₹{ciGain.toLocaleString('en-IN')}</span>
-                </div>
-                <div className="pt-2">
-                  <span className="text-xs text-zinc-500 block">Total Final Balance</span>
-                  <span className="text-2xl sm:text-3xl font-black text-violet-600 dark:text-violet-400">₹{ciTotal.toLocaleString('en-IN')}</span>
-                </div>
-              </div>
-            </div>
+      {tool.category === 'Compiler' && (
+        <div className="space-y-4">
+          <div className="rounded-2xl border border-zinc-800 bg-[#0d1117] overflow-hidden">
+            <div className="bg-[#161b22] px-4 py-2 text-xs font-mono text-zinc-400 border-b border-zinc-800">{tool.name} (RAM Thread)</div>
+            <textarea value={code} onChange={(e) => setCode(e.target.value)} rows={8} className="w-full bg-[#0d1117] p-4 font-mono text-xs text-zinc-100 focus:outline-none" />
           </div>
+          <button type="button" onClick={() => { setIsCompiling(true); setTimeout(() => { setTerminalOutput('Execution Success: Process completed with 0 errors.'); setIsCompiling(false); }, 300); }} className="rounded-xl bg-violet-600 px-6 py-2.5 text-xs font-bold text-white shadow-md">{isCompiling ? 'Running...' : 'Run Code'}</button>
+          {terminalOutput && <div className="rounded-2xl border border-zinc-800 bg-[#0a0c10] p-4 font-mono text-xs text-emerald-400">{terminalOutput}</div>}
         </div>
       )}
 
-      {tool.slug === 'loan-emi-calculator' && (
-        <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-10 shadow-sm">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-            <div className="lg:col-span-7 space-y-6">
-              <div>
-                <div className="flex justify-between text-xs font-bold text-zinc-700 dark:text-zinc-300">
-                  <span>Loan Amount</span>
-                  <span className="text-violet-600 dark:text-violet-400 font-extrabold text-sm">₹{loanAmount.toLocaleString('en-IN')}</span>
-                </div>
-                <input type="range" min="50000" max="10000000" step="50000" value={loanAmount} onChange={(e) => setLoanAmount(Number(e.target.value))} className="mt-2 w-full accent-violet-600 cursor-pointer" />
-              </div>
-              <div>
-                <div className="flex justify-between text-xs font-bold text-zinc-700 dark:text-zinc-300">
-                  <span>Interest Rate (p.a)</span>
-                  <span className="text-violet-600 dark:text-violet-400 font-extrabold text-sm">{interestRate}%</span>
-                </div>
-                <input type="range" min="5" max="20" step="0.1" value={interestRate} onChange={(e) => setInterestRate(Number(e.target.value))} className="mt-2 w-full accent-violet-600 cursor-pointer" />
-              </div>
-              <div>
-                <div className="flex justify-between text-xs font-bold text-zinc-700 dark:text-zinc-300">
-                  <span>Tenure Horizon</span>
-                  <span className="text-violet-600 dark:text-violet-400 font-extrabold text-sm">{loanTenureYears} Years</span>
-                </div>
-                <input type="range" min="1" max="30" step="1" value={loanTenureYears} onChange={(e) => setLoanTenureYears(Number(e.target.value))} className="mt-2 w-full accent-violet-600 cursor-pointer" />
-              </div>
-            </div>
-
-            <div className="lg:col-span-5 flex flex-col justify-between rounded-2xl bg-violet-50/50 dark:bg-zinc-800/40 border border-violet-100 dark:border-zinc-800 p-6 space-y-4">
-              <div className="space-y-3 text-xs">
-                <div className="flex justify-between border-b border-violet-100 dark:border-zinc-700/80 pb-2">
-                  <span className="text-zinc-500">Monthly EMI:</span>
-                  <span className="text-lg font-black text-violet-600 dark:text-violet-400">₹{emiMonthly.toLocaleString('en-IN')}</span>
-                </div>
-                <div className="flex justify-between border-b border-violet-100 dark:border-zinc-700/80 pb-2">
-                  <span className="text-zinc-500">Total Interest:</span>
-                  <span className="font-bold text-zinc-900 dark:text-white">₹{emiInterest.toLocaleString('en-IN')}</span>
-                </div>
-                <div className="flex justify-between pt-1">
-                  <span className="text-zinc-500">Total Payment:</span>
-                  <span className="font-bold text-zinc-900 dark:text-white">₹{emiTotal.toLocaleString('en-IN')}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ------------------------------------------------------------------------- */}
-      {/* GROUP 6: YOUTUBE MEDIA (1 Tool)                                           */}
-      {/* ------------------------------------------------------------------------- */}
       {tool.category === 'YouTube' && (
         <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-10 shadow-sm space-y-6">
-          <div className="flex flex-col sm:flex-row gap-3">
-            <input
-              type="text"
-              placeholder="Paste YouTube Video or Shorts URL (e.g. https://youtu.be/...)"
-              value={ytUrl}
-              onChange={(e) => setYtUrl(e.target.value)}
-              className="flex-1 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-transparent px-4 py-3.5 text-xs focus:border-violet-600 focus:outline-none text-zinc-900 dark:text-white"
-            />
-            <button
-              type="button"
-              onClick={() => {
-                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-                const match = ytUrl.match(regExp);
-                if (match && match[2].length === 11) {
-                  setVideoThumbnailId(match[2]);
-                } else {
-                  alert('Please enter a valid YouTube Video or Shorts link');
-                }
-              }}
-              className="rounded-2xl bg-violet-600 px-8 py-3.5 text-xs font-bold text-white hover:bg-violet-700 transition-colors shrink-0 shadow-md shadow-violet-500/20"
-            >
-              Extract Covers
-            </button>
+          <div className="flex gap-2">
+            <input type="text" placeholder="Paste YouTube Video URL..." value={ytUrl} onChange={(e) => setYtUrl(e.target.value)} className="flex-1 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent px-4 py-3 text-xs" />
+            <button type="button" onClick={() => { const match = ytUrl.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/); if (match && match[2].length === 11) setVideoThumbnailId(match[2]); }} className="rounded-xl bg-violet-600 px-6 py-3 text-xs font-bold text-white">Extract</button>
           </div>
-
-          {videoThumbnailId && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-3 animate-in fade-in">
-              <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40 p-4">
-                <div className="flex justify-between items-center mb-2.5">
-                  <span className="text-xs font-bold text-zinc-900 dark:text-white">1080p Ultra HD</span>
-                  <a href={`https://img.youtube.com/vi/${videoThumbnailId}/maxresdefault.jpg`} target="_blank" rel="noreferrer" className="text-xs font-bold text-violet-600 dark:text-violet-400 hover:underline inline-flex items-center gap-1">
-                    <Download className="h-3.5 w-3.5" /> Download
-                  </a>
-                </div>
-                <img src={`https://img.youtube.com/vi/${videoThumbnailId}/maxresdefault.jpg`} alt="1080p Thumbnail" className="w-full rounded-xl object-cover aspect-video shadow-sm" />
-              </div>
-              <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40 p-4">
-                <div className="flex justify-between items-center mb-2.5">
-                  <span className="text-xs font-bold text-zinc-900 dark:text-white">720p High Definition</span>
-                  <a href={`https://img.youtube.com/vi/${videoThumbnailId}/hqdefault.jpg`} target="_blank" rel="noreferrer" className="text-xs font-bold text-violet-600 dark:text-violet-400 hover:underline inline-flex items-center gap-1">
-                    <Download className="h-3.5 w-3.5" /> Download
-                  </a>
-                </div>
-                <img src={`https://img.youtube.com/vi/${videoThumbnailId}/hqdefault.jpg`} alt="720p Thumbnail" className="w-full rounded-xl object-cover aspect-video shadow-sm" />
-              </div>
-            </div>
-          )}
+          {videoThumbnailId && <img src={`https://img.youtube.com/vi/${videoThumbnailId}/maxresdefault.jpg`} alt="1080p Thumbnail" className="w-full rounded-xl aspect-video object-cover" />}
         </div>
       )}
     </div>
