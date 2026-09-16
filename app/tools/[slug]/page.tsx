@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ToolEngineRunner from '@/components/ToolEngineRunner';
 import { TOOLS_REGISTRY, ToolMeta } from '@/data/toolsRegistry';
-import { ShieldCheck, Cpu, BookOpen, ArrowRight, Zap } from 'lucide-react';
+import { ShieldCheck, Cpu, BookOpen, ArrowRight, Zap, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 
 export async function generateStaticParams() {
@@ -60,136 +60,163 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50/40 text-zinc-900 selection:bg-violet-100 selection:text-violet-900 pb-20">
-      <Navbar />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
+    <div className="min-h-screen bg-zinc-50/40 text-zinc-900 selection:bg-violet-100 selection:text-violet-900 flex flex-col justify-between">
+      <div>
+        <Navbar />
 
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
-        <nav className="flex items-center gap-2 text-xs text-zinc-500 mb-6">
-          <Link href="/" className="hover:text-violet-600 transition-colors">Home</Link>
-          <span>/</span>
-          <span>{tool.category} Tools</span>
-          <span>/</span>
-          <span className="font-semibold text-zinc-900">{tool.name}</span>
-        </nav>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
 
-        <ToolEngineRunner tool={tool} />
+        <main className="mx-auto max-w-5xl px-4 pt-10 pb-16 sm:px-6">
+          
+          {/* ================= INDEPENDENT STANDALONE HERO ================= */}
+          <div className="text-center max-w-3xl mx-auto mb-10">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700 border border-violet-200/60 mb-4">
+              <Zap className="h-3.5 w-3.5 text-violet-600" />
+              <span>{tool.badge} · Instant Execution</span>
+            </div>
+            
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-zinc-950">
+              {tool.name}
+            </h1>
+            
+            <p className="mt-3 text-sm sm:text-base text-zinc-600 max-w-2xl mx-auto leading-relaxed">
+              {tool.description}
+            </p>
+          </div>
 
-        {companionTool && (
-          <section className="mt-8 rounded-2xl border border-violet-200 bg-gradient-to-r from-violet-50/80 via-white to-indigo-50/80 p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-violet-800">
-                <Zap className="h-3.5 w-3.5 text-violet-600" />
-                <span>Recommended Companion Workflow</span>
+          {/* ================= SPECIALIZED WORKSPACE ENGINE ================= */}
+          <ToolEngineRunner tool={tool} />
+
+          {/* ================= NEXT ACTION WORKFLOW ================= */}
+          {companionTool && (
+            <section className="mt-12 rounded-2xl border border-violet-200 bg-gradient-to-r from-violet-50/70 via-white to-indigo-50/70 p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-violet-700">
+                  ✦ Recommended Workflow
+                </span>
+                <p className="text-xs sm:text-sm text-zinc-700 font-medium">
+                  {tool.companionPitch}
+                </p>
               </div>
-              <p className="text-xs text-zinc-600 max-w-2xl leading-relaxed">
-                {tool.companionPitch}
+              <Link
+                href={`/tools/${companionTool.slug}`}
+                className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-violet-700 transition-all shrink-0 hover:translate-x-0.5"
+              >
+                <span>Launch {companionTool.name}</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </section>
+          )}
+
+          {/* ================= E-E-A-T TECHNICAL GUIDE & FAQ ================= */}
+          <article className="mt-14 space-y-8 rounded-3xl border border-zinc-200 bg-white p-6 sm:p-10 shadow-sm text-zinc-800">
+            <div className="border-b border-zinc-100 pb-6">
+              <div className="flex items-center gap-2 text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full w-fit border border-emerald-200/60 mb-3">
+                <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+                <span>Zero Server Uploads · 100% Client-Side Local</span>
+              </div>
+              <h2 className="text-xl font-black tracking-tight sm:text-2xl text-zinc-950">
+                How {tool.name} Operates
+              </h2>
+              <p className="mt-1 text-xs sm:text-sm text-zinc-600">
+                Complete technical breakdown of memory isolation and in-browser processing.
               </p>
             </div>
-            <Link
-              href={`/tools/${companionTool.slug}`}
-              className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-violet-700 transition-all shrink-0 hover:translate-x-0.5"
-            >
-              <span>Launch {companionTool.name}</span>
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </section>
-        )}
 
-        <article className="mt-12 space-y-8 rounded-2xl border border-zinc-200/80 bg-white p-6 sm:p-10 shadow-sm text-zinc-800">
-          <div className="border-b border-zinc-100 pb-6">
-            <div className="flex items-center gap-2 text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full w-fit border border-emerald-200/60 mb-3">
-              <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
-              <span>Verified Client-Side Execution Standard</span>
-            </div>
-            <h1 className="text-2xl font-black tracking-tight sm:text-3xl text-zinc-950">
-              Technical Guide: {tool.name} Architecture
-            </h1>
-            <p className="mt-2 text-xs sm:text-sm text-zinc-600">
-              An exhaustive architectural analysis of client-side execution, algorithmic performance, and memory sandboxing.
-            </p>
-          </div>
+            <section className="space-y-3">
+              <h3 className="text-sm font-bold text-zinc-900 flex items-center gap-2">
+                <Cpu className="h-4 w-4 text-violet-600" />
+                Browser Thread Execution Paradigm
+              </h3>
+              <p className="text-xs sm:text-sm leading-relaxed text-zinc-600">
+                Unlike traditional online SaaS platforms that force you to upload sensitive files, media, or scripts across external web servers, this utility executes entirely inside your client browser thread. Operations are carried out locally within sandboxed WebAssembly (WASM) workers and HTML5 Canvas buffers.
+              </p>
+            </section>
 
-          <section className="space-y-3">
-            <h2 className="text-lg font-bold text-zinc-900 flex items-center gap-2">
-              <Cpu className="h-5 w-5 text-violet-600" />
-              How It Operates Under the Hood
-            </h2>
-            <p className="text-xs sm:text-sm leading-relaxed text-zinc-600">
-              Unlike cloud utility platforms that transfer your code, image binaries, or financial variables over the internet to remote servers,
-              this tool operates under a strict <strong>Zero-Server Execution Paradigm</strong>. Everything executes strictly inside your browser thread via sandboxed WebAssembly (WASM) and local Canvas allocations.
-            </p>
-          </section>
-
-          <section className="space-y-3">
-            <h3 className="text-sm font-bold text-zinc-900">Architecture & Performance Metrics</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border border-zinc-100">
-                <thead className="bg-zinc-50 text-zinc-700 font-bold border-b border-zinc-100">
-                  <tr>
-                    <th className="p-3">Parameter</th>
-                    <th className="p-3">Specification</th>
-                    <th className="p-3">Privacy Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-100 text-zinc-600">
-                  <tr>
-                    <td className="p-3 font-medium text-zinc-900">Execution Sandbox</td>
-                    <td className="p-3">{tool.badge}</td>
-                    <td className="p-3 text-emerald-600 font-semibold">100% Client-Side Local</td>
-                  </tr>
-                  <tr>
-                    <td className="p-3 font-medium text-zinc-900">Network Latency</td>
-                    <td className="p-3">0ms (Local Execution)</td>
-                    <td className="p-3 text-emerald-600 font-semibold">Zero Remote Payload</td>
-                  </tr>
-                  <tr>
-                    <td className="p-3 font-medium text-zinc-900">Data Retention Policy</td>
-                    <td className="p-3">Immediate garbage collection on tab close</td>
-                    <td className="p-3 text-emerald-600 font-semibold">Zero Server Telemetry</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-          <section className="space-y-4 pt-4 border-t border-zinc-100">
-            <h2 className="text-lg font-bold text-zinc-900 flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-violet-600" />
-              Frequently Asked Questions
-            </h2>
-            <div className="space-y-3">
-              <div className="rounded-xl border border-zinc-100 p-4 bg-zinc-50/50">
-                <h4 className="text-xs font-bold text-zinc-900">Is {tool.name} free for commercial use?</h4>
-                <p className="mt-1 text-xs text-zinc-600 leading-relaxed">Yes. All output files, extracted covers, and calculated growth schedules generated by this engine are completely royalty-free.</p>
+            <section className="space-y-3">
+              <h3 className="text-sm font-bold text-zinc-900">Technical Specifications</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border border-zinc-100 rounded-xl overflow-hidden">
+                  <thead className="bg-zinc-50 text-zinc-700 font-bold border-b border-zinc-100">
+                    <tr>
+                      <th className="p-3">Parameter</th>
+                      <th className="p-3">Runtime Specification</th>
+                      <th className="p-3">Privacy Guarantee</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-zinc-100 text-zinc-600">
+                    <tr>
+                      <td className="p-3 font-medium text-zinc-900">Engine Sandbox</td>
+                      <td className="p-3">{tool.badge}</td>
+                      <td className="p-3 text-emerald-600 font-semibold">100% Client Local</td>
+                    </tr>
+                    <tr>
+                      <td className="p-3 font-medium text-zinc-900">Network Latency</td>
+                      <td className="p-3">0ms (Local RAM Compute)</td>
+                      <td className="p-3 text-emerald-600 font-semibold">Zero Uploads</td>
+                    </tr>
+                    <tr>
+                      <td className="p-3 font-medium text-zinc-900">Data Retention</td>
+                      <td className="p-3">Garbage-collected on tab close</td>
+                      <td className="p-3 text-emerald-600 font-semibold">Zero Persistence</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-              <div className="rounded-xl border border-zinc-100 p-4 bg-zinc-50/50">
-                <h4 className="text-xs font-bold text-zinc-900">Why does this tool execute faster than other online utilities?</h4>
-                <p className="mt-1 text-xs text-zinc-600 leading-relaxed">Most websites serialize data over the network, queue on remote VMs, and download responses. Our client-side model computes directly inside your device RAM for instantaneous feedback.</p>
-              </div>
-            </div>
-          </section>
-        </article>
+            </section>
 
-        <section className="mt-12">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-bold text-zinc-900">Explore Other Utilities</h3>
-            <Link href="/#tools" className="text-xs font-semibold text-violet-600 hover:underline">View All 80 Tools →</Link>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {relatedTools.map((relTool: ToolMeta) => (
-              <Link key={relTool.slug} href={`/tools/${relTool.slug}`} className="group rounded-xl border border-zinc-200 bg-white p-4 shadow-sm hover:border-violet-300 hover:shadow-md transition-all text-left">
-                <span className="text-[10px] font-semibold text-violet-700 bg-violet-50 px-2 py-0.5 rounded">{relTool.category}</span>
-                <h4 className="mt-2 text-xs font-bold text-zinc-900 group-hover:text-violet-600 transition-colors">{relTool.name}</h4>
-                <p className="mt-1 text-[11px] text-zinc-500 line-clamp-2 leading-relaxed">{relTool.description}</p>
+            <section className="space-y-4 pt-4 border-t border-zinc-100">
+              <h3 className="text-sm font-bold text-zinc-900 flex items-center gap-2">
+                <BookOpen className="h-4 w-4 text-violet-600" />
+                Frequently Asked Questions
+              </h3>
+              <div className="space-y-3">
+                <div className="rounded-xl border border-zinc-100 p-4 bg-zinc-50/50">
+                  <h4 className="text-xs font-bold text-zinc-900">Is {tool.name} free for commercial use?</h4>
+                  <p className="mt-1 text-xs text-zinc-600 leading-relaxed">Yes. All outputs, formatted payloads, and processed media created by this tool are 100% royalty-free.</p>
+                </div>
+                <div className="rounded-xl border border-zinc-100 p-4 bg-zinc-50/50">
+                  <h4 className="text-xs font-bold text-zinc-900">Does this tool save or log my input data?</h4>
+                  <p className="mt-1 text-xs text-zinc-600 leading-relaxed">No. We maintain zero database records. All variables vanish from memory when you close or refresh the window.</p>
+                </div>
+              </div>
+            </section>
+          </article>
+
+          {/* ================= MORE TOOLS SECTION ================= */}
+          <section className="mt-14">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-500">Related Utilities</h3>
+              <Link href="/#tools" className="text-xs font-semibold text-violet-600 hover:underline">
+                Explore All Tools →
               </Link>
-            ))}
-          </div>
-        </section>
-      </main>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {relatedTools.map((relTool: ToolMeta) => (
+                <Link
+                  key={relTool.slug}
+                  href={`/tools/${relTool.slug}`}
+                  className="group rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm hover:border-violet-300 hover:shadow-md transition-all text-left"
+                >
+                  <span className="text-[10px] font-semibold text-violet-700 bg-violet-50 px-2 py-0.5 rounded">
+                    {relTool.category}
+                  </span>
+                  <h4 className="mt-2 text-xs font-bold text-zinc-900 group-hover:text-violet-600 transition-colors">
+                    {relTool.name}
+                  </h4>
+                  <p className="mt-1 text-[11px] text-zinc-500 line-clamp-2 leading-relaxed">
+                    {relTool.description}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        </main>
+      </div>
+
       <Footer />
     </div>
   );
