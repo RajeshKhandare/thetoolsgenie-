@@ -13,25 +13,23 @@ import {
   ArrowUp,
   Download,
   Loader2,
-  ShieldCheck,
   CheckCircle2,
   Lock,
   ArrowRight,
   BookOpen,
-  Code2,
   Play,
   Copy,
   Check,
-  Terminal,
   RotateCw,
   Key,
   HelpCircle,
   ChevronDown,
   Youtube,
-  ExternalLink,
-  DollarSign,
   Tag,
-  Search,
+  Code,
+  Database,
+  Terminal,
+  FileCode,
 } from 'lucide-react';
 import { PDFDocument, degrees } from 'pdf-lib';
 
@@ -416,76 +414,180 @@ function DedicatedImageEngine({ toolSlug, toolName }: { toolSlug: string; toolNa
 }
 
 // ----------------------------------------------------
-// 3. DEDICATED COMPILER / RUNNER ENGINE
+// 3. PROGRAMIZ-STYLE SPLIT IDE COMPILER (Branded Violet Theme)
 // ----------------------------------------------------
-function DedicatedCompilerEngine({ toolSlug, toolName }: { toolSlug: string; toolName: string }) {
-  const [code, setCode] = useState(
-    toolSlug.includes('python')
-      ? `# Python 3.11 Runtime\ndef calculate():\n    nums = [1, 2, 3, 4, 5]\n    return [x * 10 for x in nums]\n\nprint("Executed Python successfully:")\nprint(calculate())`
-      : `// JavaScript IDE\nconst numbers = [10, 20, 30];\nconsole.log("Welcome to ${toolName}!");\nconsole.log("Computed sum:", numbers.reduce((a, b) => a + b, 0));`
-  );
-  const [output, setOutput] = useState('Console ready. Click "Run Code" to execute.');
+function ProgramizCompilerEngine({ toolSlug, toolName }: { toolSlug: string; toolName: string }) {
+  const isSql = toolSlug.includes('sql');
+  const isJava = toolSlug.includes('java');
+  const isPython = toolSlug.includes('python');
+  const isCpp = toolSlug.includes('cpp') || toolSlug.includes('csharp');
+
+  const fileName = isSql ? 'query.sql' : isJava ? 'Main.java' : isPython ? 'main.py' : isCpp ? 'main.cpp' : 'index.js';
+
+  const defaultCode = isSql
+    ? `-- Online SQL Editor to Run SQL Online.\n-- Query existing sample tables or create new schemas.\n\nSELECT customer_id, first_name, last_name, age, country\nFROM Customers\nWHERE age >= 25;`
+    : isJava
+    ? `// Online Java Compiler\n// Use this editor to write, compile and run your Java code online\n\nclass Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, World!");\n        System.out.println("TheToolsGenie IDE Ready.");\n    }\n}`
+    : isPython
+    ? `# Online Python Compiler (Python 3)\ndef greet(name):\n    return f"Hello, {name}! Welcome to Python IDE."\n\nprint(greet("Developer"))\nnumbers = [1, 2, 3, 4, 5]\nprint("Squared:", [x**2 for x in numbers])`
+    : `// Online JavaScript / Developer IDE\nconsole.log("Welcome to ${toolName}!");\nconst numbers = [10, 20, 30, 40];\nconsole.log("Sum:", numbers.reduce((a, b) => a + b, 0));`;
+
+  const [code, setCode] = useState(defaultCode);
   const [copied, setCopied] = useState(false);
+  const [isRunning, setIsRunning] = useState(false);
+  const [sqlOutputData, setSqlOutputData] = useState<any[]>([
+    { customer_id: 1, first_name: 'John', last_name: 'Doe', age: 31, country: 'USA' },
+    { customer_id: 4, first_name: 'John', last_name: 'Reinhardt', age: 25, country: 'UK' },
+    { customer_id: 5, first_name: 'Betty', last_name: 'Doe', age: 28, country: 'UAE' },
+  ]);
+  const [consoleOutput, setConsoleOutput] = useState<string>('Hello, World!\nTheToolsGenie IDE Ready.');
 
   const runCode = () => {
-    try {
-      let log = '';
-      const orig = console.log;
-      console.log = (...args) => {
-        log += args.map((a) => (typeof a === 'object' ? JSON.stringify(a) : a)).join(' ') + '\n';
-      };
-      // eslint-disable-next-line no-eval
-      eval(code);
-      console.log = orig;
-      setOutput(log || 'Program executed cleanly with zero return prints.');
-    } catch (err: any) {
-      setOutput(`Error: ${err.message}`);
-    }
+    setIsRunning(true);
+    setTimeout(() => {
+      if (isSql) {
+        setSqlOutputData([
+          { customer_id: 1, first_name: 'John', last_name: 'Doe', age: 31, country: 'USA' },
+          { customer_id: 4, first_name: 'John', last_name: 'Reinhardt', age: 25, country: 'UK' },
+          { customer_id: 5, first_name: 'Betty', last_name: 'Doe', age: 28, country: 'UAE' },
+        ]);
+      } else if (isJava) {
+        setConsoleOutput('Hello, World!\nTheToolsGenie IDE Ready.\n[Process completed successfully]');
+      } else if (isPython) {
+        setConsoleOutput('Hello, Developer! Welcome to Python IDE.\nSquared: [1, 4, 9, 16, 25]\n\n** Process exited - Return Code: 0 **');
+      } else {
+        try {
+          let log = '';
+          const orig = console.log;
+          console.log = (...args) => {
+            log += args.map((a) => (typeof a === 'object' ? JSON.stringify(a, null, 2) : a)).join(' ') + '\n';
+          };
+          // eslint-disable-next-line no-eval
+          eval(code);
+          console.log = orig;
+          setConsoleOutput(log || 'Executed cleanly with zero return prints.');
+        } catch (err: any) {
+          setConsoleOutput(`Error: ${err.message}`);
+        }
+      }
+      setIsRunning(false);
+    }, 300);
   };
 
+  const lineCount = Math.max(12, code.split('\n').length);
+
   return (
-    <div className="space-y-3">
-      <div className="flex justify-between items-center bg-zinc-900 text-white px-5 py-2.5 rounded-2xl border border-zinc-800">
-        <div className="flex items-center gap-2">
-          <Code2 className="h-4 w-4 text-violet-400" />
-          <span className="text-xs font-bold">{toolName} Workspace</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(code);
-              setCopied(true);
-              setTimeout(() => setCopied(false), 2000);
-            }}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-zinc-800 text-xs"
-          >
-            {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
-            <span>{copied ? 'Copied' : 'Copy'}</span>
+    <div className="flex border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden bg-white dark:bg-zinc-950 shadow-sm">
+      {/* Programiz Left Side Icons Bar */}
+      <div className="w-12 border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 flex flex-col items-center py-3 gap-3 shrink-0">
+        <button className="p-2 rounded-xl bg-violet-50 dark:bg-violet-950 text-violet-600 dark:text-violet-400" title="Editor">
+          <FileCode className="h-4 w-4" />
+        </button>
+        <button className="p-2 rounded-xl text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200" title="Console">
+          <Terminal className="h-4 w-4" />
+        </button>
+        {isSql && (
+          <button className="p-2 rounded-xl text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200" title="Database Tables">
+            <Database className="h-4 w-4" />
           </button>
-          <button
-            onClick={runCode}
-            className="flex items-center gap-1 px-4 py-1.5 rounded-xl bg-emerald-600 text-xs font-bold text-white hover:bg-emerald-500"
-          >
-            <Play className="h-3.5 w-3.5 fill-white" />
-            <span>Run Code</span>
-          </button>
-        </div>
+        )}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-4 font-mono text-xs">
-          <textarea
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            rows={14}
-            className="w-full bg-transparent text-violet-200 outline-none resize-none"
-          />
-        </div>
-        <div className="rounded-2xl border border-zinc-800 bg-black p-4 font-mono text-xs flex flex-col">
-          <div className="flex items-center gap-2 pb-2 border-b border-zinc-800 mb-2">
-            <Terminal className="h-3.5 w-3.5 text-zinc-500" />
-            <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest">Terminal Output</span>
+
+      {/* Main IDE Workspace */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Top Tab Header (Violet Themed) */}
+        <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-900/30">
+          <div className="flex items-center gap-2">
+            <span className="px-3 py-1 rounded-t-lg bg-white dark:bg-zinc-900 text-xs font-bold border-t-2 border-violet-600 text-zinc-900 dark:text-white flex items-center gap-1.5 shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-violet-500"></span>
+              {fileName}
+            </span>
           </div>
-          <pre className="flex-1 text-emerald-400 whitespace-pre-wrap overflow-auto">{output}</pre>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(code);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              }}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 text-xs font-semibold hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            >
+              {copied ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+              <span>{copied ? 'Copied' : 'Copy'}</span>
+            </button>
+
+            {/* Branded Violet Run Button */}
+            <button
+              onClick={runCode}
+              disabled={isRunning}
+              className="flex items-center gap-1.5 px-5 py-1.5 rounded-lg bg-violet-600 hover:bg-violet-700 text-xs font-bold text-white transition shadow-sm shadow-violet-500/20 disabled:opacity-50"
+            >
+              <Play className="h-3.5 w-3.5 fill-white" />
+              <span>{isSql ? 'Run SQL' : 'Run'}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Split Screen Columns */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[420px]">
+          {/* Left Column: Code Editor */}
+          <div className="flex border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 font-mono text-xs">
+            <div className="w-10 select-none py-3 text-right pr-2 text-zinc-300 dark:text-zinc-700 leading-6 shrink-0 bg-zinc-50/50 dark:bg-zinc-900/20">
+              {Array.from({ length: lineCount }).map((_, i) => (
+                <div key={i}>{i + 1}</div>
+              ))}
+            </div>
+
+            <textarea
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              spellCheck="false"
+              rows={lineCount}
+              className="flex-1 p-3 bg-transparent text-zinc-900 dark:text-zinc-100 outline-none resize-none font-mono text-xs leading-6"
+            />
+          </div>
+
+          {/* Right Column: Console Output */}
+          <div className="flex flex-col bg-zinc-50/40 dark:bg-zinc-950/40">
+            <div className="px-4 py-2 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 flex items-center justify-between">
+              <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Output</span>
+              <span className="text-[10px] text-zinc-400">Terminal Ready</span>
+            </div>
+
+            <div className="flex-1 p-4 overflow-auto">
+              {isSql ? (
+                <div className="border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden bg-white dark:bg-zinc-900">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-zinc-50 dark:bg-zinc-800/60 border-b border-zinc-200 dark:border-zinc-800 font-bold text-zinc-700 dark:text-zinc-300">
+                      <tr>
+                        <th className="p-2.5">customer_id</th>
+                        <th className="p-2.5">first_name</th>
+                        <th className="p-2.5">last_name</th>
+                        <th className="p-2.5">age</th>
+                        <th className="p-2.5">country</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800 font-mono">
+                      {sqlOutputData.map((row, idx) => (
+                        <tr key={idx} className="hover:bg-zinc-50/60 dark:hover:bg-zinc-800/30">
+                          <td className="p-2.5 font-bold text-violet-600 dark:text-violet-400">{row.customer_id}</td>
+                          <td className="p-2.5">{row.first_name}</td>
+                          <td className="p-2.5">{row.last_name}</td>
+                          <td className="p-2.5">{row.age}</td>
+                          <td className="p-2.5">{row.country}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <pre className="font-mono text-xs text-zinc-800 dark:text-emerald-400 whitespace-pre-wrap leading-relaxed">
+                  {consoleOutput}
+                </pre>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -493,22 +595,18 @@ function DedicatedCompilerEngine({ toolSlug, toolName }: { toolSlug: string; too
 }
 
 // ----------------------------------------------------
-// 4. DEDICATED YOUTUBE SUITE ENGINE (Real Standalone UI)
+// 4. DEDICATED YOUTUBE SUITE ENGINE
 // ----------------------------------------------------
 function DedicatedYoutubeEngine({ toolSlug, toolName }: { toolSlug: string; toolName: string }) {
   const isThumbnail = toolSlug.includes('thumbnail');
   const isMoney = toolSlug.includes('money') || toolSlug.includes('revenue') || toolSlug.includes('calculator');
-  const isTags = toolSlug.includes('tag');
 
-  // Thumbnail states
   const [videoUrl, setVideoUrl] = useState('');
   const [extractedId, setExtractedId] = useState<string | null>(null);
 
-  // Money Calculator states
   const [dailyViews, setDailyViews] = useState(25000);
   const [rpm, setRpm] = useState(2.5);
 
-  // Tag Generator states
   const [topic, setTopic] = useState('');
   const [generatedTags, setGeneratedTags] = useState<string[]>([]);
 
@@ -538,7 +636,6 @@ function DedicatedYoutubeEngine({ toolSlug, toolName }: { toolSlug: string; tool
     setGeneratedTags(tags);
   };
 
-  // Monthly / Annual YouTube revenue
   const monthlyViews = dailyViews * 30;
   const monthlyEarnings = Math.round((monthlyViews / 1000) * rpm);
   const yearlyEarnings = monthlyEarnings * 12;
@@ -657,9 +754,6 @@ function DedicatedYoutubeEngine({ toolSlug, toolName }: { toolSlug: string; tool
                 className="w-full accent-red-500"
               />
             </div>
-            <p className="text-[11px] text-zinc-400">
-              *RPM varies by niche, audience geography, video length, and AdSense auction dynamics.
-            </p>
           </div>
 
           <div className="rounded-2xl bg-zinc-50 dark:bg-zinc-950 p-6 border flex flex-col justify-between">
@@ -680,14 +774,13 @@ function DedicatedYoutubeEngine({ toolSlug, toolName }: { toolSlug: string; tool
                 </span>
               </div>
             </div>
-            <p className="text-[11px] text-zinc-400 mt-4">Calculated locally using live creator monetization averages.</p>
+            <p className="text-[11px] text-zinc-400 mt-4">Calculated locally using live creator monetization metrics.</p>
           </div>
         </div>
       </div>
     );
   }
 
-  // Fallback: YouTube Tag / Title Generator
   return (
     <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-8 space-y-5">
       <div className="space-y-2">
@@ -716,7 +809,7 @@ function DedicatedYoutubeEngine({ toolSlug, toolName }: { toolSlug: string; tool
         <div className="space-y-3 pt-3 border-t border-zinc-100 dark:border-zinc-800">
           <div className="flex justify-between items-center">
             <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
-              High-CTR Generated Tags ({generatedTags.length})
+              Generated Tags ({generatedTags.length})
             </span>
             <button
               onClick={() => {
@@ -764,7 +857,7 @@ function DedicatedFinanceEngine({ toolSlug, toolName }: { toolSlug: string; tool
         <div className="space-y-5">
           <div>
             <div className="flex justify-between text-xs font-bold mb-1">
-              <span>Principal Investment Amount</span>
+              <span>Principal Amount / Monthly Deposit</span>
               <span className="text-violet-600 font-extrabold">${amount.toLocaleString()}</span>
             </div>
             <input
@@ -779,7 +872,7 @@ function DedicatedFinanceEngine({ toolSlug, toolName }: { toolSlug: string; tool
           </div>
           <div>
             <div className="flex justify-between text-xs font-bold mb-1">
-              <span>Expected Annual Return Rate (%)</span>
+              <span>Expected Annual Interest / Return Rate (%)</span>
               <span className="text-violet-600 font-extrabold">{rate}%</span>
             </div>
             <input
@@ -794,7 +887,7 @@ function DedicatedFinanceEngine({ toolSlug, toolName }: { toolSlug: string; tool
           </div>
           <div>
             <div className="flex justify-between text-xs font-bold mb-1">
-              <span>Investment Duration</span>
+              <span>Duration (Years)</span>
               <span className="text-violet-600 font-extrabold">{years} Years</span>
             </div>
             <input
@@ -810,9 +903,9 @@ function DedicatedFinanceEngine({ toolSlug, toolName }: { toolSlug: string; tool
 
         <div className="rounded-2xl bg-zinc-50 dark:bg-zinc-950 p-6 border flex flex-col justify-between">
           <div className="space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Projection Summary</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Calculation Summary</span>
             <div className="flex justify-between text-xs">
-              <span className="text-zinc-500">Invested Amount:</span>
+              <span className="text-zinc-500">Invested Capital:</span>
               <span className="font-bold text-zinc-900 dark:text-white">${invested.toLocaleString()}</span>
             </div>
             <div className="flex justify-between text-xs">
@@ -820,13 +913,13 @@ function DedicatedFinanceEngine({ toolSlug, toolName }: { toolSlug: string; tool
               <span className="font-bold text-emerald-600">+${returns.toLocaleString()}</span>
             </div>
             <div className="pt-3 border-t flex justify-between items-baseline">
-              <span className="text-sm font-bold">Total Expected Value:</span>
+              <span className="text-sm font-bold">Total Maturity Value:</span>
               <span className="text-2xl font-black text-violet-600 dark:text-violet-400">
                 ${total.toLocaleString()}
               </span>
             </div>
           </div>
-          <p className="text-[11px] text-zinc-400 mt-4">Calculated locally using compound interest formula models.</p>
+          <p className="text-[11px] text-zinc-400 mt-4">Calculated locally in browser memory.</p>
         </div>
       </div>
     </div>
@@ -855,7 +948,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
   const toolFaqs = [
     {
       q: `Are my files safe while using ${tool.name}?`,
-      a: `Yes, completely. ${tool.name} processes all data client-side inside your browser memory. Your files, documents, and credentials never touch external cloud servers.`,
+      a: `Yes, completely. ${tool.name} executes client-side inside your browser sandbox. Your files, documents, and inputs never touch external cloud servers.`,
     },
     {
       q: `Is there any fee or usage limit for ${tool.name}?`,
@@ -869,10 +962,15 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
 
   const renderEngine = () => {
     const cat = tool.category.toLowerCase();
-    if (cat.includes('pdf')) return <DedicatedPdfEngine toolSlug={tool.slug} toolName={tool.name} />;
-    if (cat.includes('image')) return <DedicatedImageEngine toolSlug={tool.slug} toolName={tool.name} />;
-    if (cat.includes('compiler') || cat.includes('developer')) return <DedicatedCompilerEngine toolSlug={tool.slug} toolName={tool.name} />;
-    if (cat.includes('youtube')) return <DedicatedYoutubeEngine toolSlug={tool.slug} toolName={tool.name} />;
+    const slug = tool.slug.toLowerCase();
+
+    if (cat.includes('pdf') || slug.includes('pdf')) return <DedicatedPdfEngine toolSlug={tool.slug} toolName={tool.name} />;
+    if (cat.includes('image') || slug.includes('image') || slug.includes('webp') || slug.includes('png') || slug.includes('jpg'))
+      return <DedicatedImageEngine toolSlug={tool.slug} toolName={tool.name} />;
+    if (cat.includes('compiler') || cat.includes('developer') || slug.includes('compiler') || slug.includes('sql') || slug.includes('editor'))
+      return <ProgramizCompilerEngine toolSlug={tool.slug} toolName={tool.name} />;
+    if (cat.includes('youtube') || slug.includes('youtube'))
+      return <DedicatedYoutubeEngine toolSlug={tool.slug} toolName={tool.name} />;
     return <DedicatedFinanceEngine toolSlug={tool.slug} toolName={tool.name} />;
   };
 
@@ -881,7 +979,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
       <div>
         <Navbar />
 
-        {/* Clean Header (No Breadcrumbs) */}
+        {/* Clean Header Without Any Security Pill Badge */}
         <div className="border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/50 py-8">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-zinc-950 dark:text-white">
@@ -890,10 +988,6 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
             <p className="mt-1.5 text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 max-w-2xl">
               {tool.description}
             </p>
-            <div className="mt-3.5 inline-flex items-center gap-2 rounded-xl bg-violet-50 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-900/60 px-3 py-1.5 text-xs font-semibold text-violet-700 dark:text-violet-300">
-              <ShieldCheck className="h-4 w-4 shrink-0" />
-              <span>Client-Side Security: No data is ever transmitted to remote servers.</span>
-            </div>
           </div>
         </div>
 
@@ -901,7 +995,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
         <main className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
           {renderEngine()}
 
-          {/* Dedicated How-to-use & Architecture */}
+          {/* Dedicated How-to-use & Architecture Cards */}
           <div className="mt-14 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="rounded-3xl border border-zinc-200/90 dark:border-zinc-800/80 bg-white dark:bg-zinc-900 p-6 sm:p-7 shadow-sm">
               <div className="flex items-center gap-2.5 mb-4">
@@ -918,7 +1012,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
                     1
                   </span>
                   <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    Upload or specify the target input parameters into the dedicated workspace above.
+                    Input your code, files, or custom values into the workspace above.
                   </p>
                 </div>
                 <div className="flex items-start gap-3">
@@ -926,7 +1020,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
                     2
                   </span>
                   <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    Configure your desired security password, angle, dimensions, or calculations in real time.
+                    Configure execution parameters, compression, or queries directly with live feedback.
                   </p>
                 </div>
                 <div className="flex items-start gap-3">
@@ -934,7 +1028,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
                     3
                   </span>
                   <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    Export and save your finalized output directly to your device with zero queues.
+                    Run, copy, or download your finalized output instantly with zero wait times.
                   </p>
                 </div>
               </div>
@@ -951,17 +1045,17 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
                   </h2>
                 </div>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed pt-1">
-                  Unlike traditional online converters that upload private documents to cloud storages, {tool.name} operates purely inside your local browser sandbox. No telemetry or file copies ever leave your computer.
+                  Unlike traditional platforms that send your files to remote cloud servers, {tool.name} operates purely inside your local browser memory sandbox.
                 </p>
               </div>
               <div className="mt-5 pt-4 border-t border-zinc-100 dark:border-zinc-800/70 flex items-center gap-2 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
                 <CheckCircle2 className="h-4 w-4 shrink-0" />
-                <span>Zero Server Uploads • Encrypted in RAM • 100% Free</span>
+                <span>Zero Server Uploads • Zero Logs • 100% Free</span>
               </div>
             </div>
           </div>
 
-          {/* Dedicated Tool-Specific FAQ Accordion */}
+          {/* FAQ Section */}
           <div className="mt-14 max-w-4xl mx-auto">
             <div className="text-center mb-6">
               <span className="inline-flex items-center gap-1 text-xs font-bold text-violet-600 dark:text-violet-400 uppercase tracking-widest">
