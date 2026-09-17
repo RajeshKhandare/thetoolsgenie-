@@ -6,7 +6,14 @@ import { Sparkles, Sun, Moon, ChevronDown, Menu, X, ArrowRight } from 'lucide-re
 import LanguageSelector from '@/components/LanguageSelector';
 import { TOOLS_REGISTRY } from '@/data/toolsRegistry';
 
-const CATEGORY_TABS = ['PDF', 'Image', 'Compiler', 'Finance', 'YouTube'];
+// Category keys mapped directly to the homepage/directory filter pills
+const CATEGORIES_CONFIG = [
+  { label: 'PDF', query: 'PDF Tools' },
+  { label: 'Image', query: 'Image Tools' },
+  { label: 'Compiler', query: 'Compiler Tools' },
+  { label: 'Finance', query: 'Finance Tools' },
+  { label: 'YouTube', query: 'YouTube Tools' },
+];
 
 export default function Navbar() {
   const [isDark, setIsDark] = useState(false);
@@ -35,7 +42,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         
-        {/* Logo */}
+        {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2.5 shrink-0">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 text-white shadow-md shadow-violet-500/20">
             <Sparkles className="h-5 w-5" />
@@ -50,39 +57,56 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Categories with Hover Tool Cards */}
+        {/* Categories Navigation with Hover Tool Cards */}
         <nav className="hidden lg:flex items-center gap-1">
-          {CATEGORY_TABS.map((cat) => {
-            const catTools = TOOLS_REGISTRY.filter((t) => t.category === cat).slice(0, 5);
+          {CATEGORIES_CONFIG.map((cat) => {
+            const catTools = TOOLS_REGISTRY.filter(
+              (t) => t.category.toLowerCase() === cat.label.toLowerCase()
+            ).slice(0, 5);
+
             return (
               <div
-                key={cat}
+                key={cat.label}
                 className="relative"
-                onMouseEnter={() => setActiveDropdown(cat)}
+                onMouseEnter={() => setActiveDropdown(cat.label)}
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 <button
                   type="button"
                   className="flex items-center gap-1 rounded-xl px-3.5 py-2 text-xs font-semibold text-zinc-600 dark:text-zinc-300 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-zinc-100/60 dark:hover:bg-zinc-900 transition-all"
                 >
-                  <span>{cat}</span>
-                  <ChevronDown className={`h-3.5 w-3.5 transition-transform ${activeDropdown === cat ? 'rotate-180 text-violet-600' : ''}`} />
+                  <span>{cat.label}</span>
+                  <ChevronDown
+                    className={`h-3.5 w-3.5 transition-transform ${
+                      activeDropdown === cat.label ? 'rotate-180 text-violet-600' : ''
+                    }`}
+                  />
                 </button>
 
                 {/* Hover Cards Dropdown */}
-                {activeDropdown === cat && (
+                {activeDropdown === cat.label && (
                   <div className="absolute top-full left-0 w-80 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-2 shadow-2xl shadow-zinc-950/15 dark:shadow-zinc-950/60 z-50 animate-in fade-in duration-150">
                     <div className="p-2 border-b border-zinc-100 dark:border-zinc-800/80 mb-1 flex justify-between items-center">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Popular {cat} Utilities</span>
-                      <Link href={`/tools?category=${cat.toLowerCase()}`} className="text-[11px] font-bold text-violet-600 hover:underline flex items-center gap-1">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                        Popular {cat.label} Utilities
+                      </span>
+                      
+                      {/* Connected View All Link */}
+                      <Link
+                        href={`/tools?category=${encodeURIComponent(cat.query)}`}
+                        onClick={() => setActiveDropdown(null)}
+                        className="text-[11px] font-bold text-violet-600 dark:text-violet-400 hover:underline flex items-center gap-1"
+                      >
                         View all <ArrowRight className="h-2.5 w-2.5" />
                       </Link>
                     </div>
+
                     <div className="space-y-1">
                       {catTools.map((t) => (
                         <Link
                           key={t.slug}
                           href={`/tools/${t.slug}`}
+                          onClick={() => setActiveDropdown(null)}
                           className="block p-2.5 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors group"
                         >
                           <p className="text-xs font-bold text-zinc-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
@@ -101,7 +125,7 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* Right Action Bar: Custom Language Selector + Theme Toggle */}
+        {/* Right Action Bar */}
         <div className="flex items-center gap-2.5">
           <LanguageSelector />
 
@@ -121,6 +145,27 @@ export default function Navbar() {
           </button>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-4 py-4 space-y-3">
+          <div className="grid grid-cols-2 gap-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+            <Link href="/tools" onClick={() => setMobileMenuOpen(false)} className="p-2 rounded-lg bg-zinc-50 dark:bg-zinc-900">
+              All 80 Tools
+            </Link>
+            {CATEGORIES_CONFIG.map((cat) => (
+              <Link
+                key={cat.label}
+                href={`/tools?category=${encodeURIComponent(cat.query)}`}
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2 rounded-lg bg-zinc-50 dark:bg-zinc-900"
+              >
+                {cat.label} Tools
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </header>
   );
 }
