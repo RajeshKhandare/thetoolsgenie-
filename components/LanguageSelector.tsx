@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronDown, Check, Globe } from 'lucide-react';
 
-// Crisp SVG Vector Flags (Works on Windows, Mac, Android & iOS without text bug)
 const FLAG_ICONS: Record<string, React.ReactNode> = {
   en: (
     <svg className="h-3.5 w-5 rounded-sm object-cover shadow-sm shrink-0" viewBox="0 0 640 480">
@@ -89,18 +88,18 @@ const FLAG_ICONS: Record<string, React.ReactNode> = {
 };
 
 const LANGUAGES = [
-  { code: 'en', name: 'English', short: 'EN' },
-  { code: 'pt', name: 'Português', short: 'PT' },
-  { code: 'es', name: 'Español', short: 'ES' },
-  { code: 'de', name: 'Deutsch', short: 'DE' },
-  { code: 'fr', name: 'Français', short: 'FR' },
-  { code: 'it', name: 'Italiano', short: 'IT' },
-  { code: 'ja', name: '日本語', short: 'JA' },
-  { code: 'ko', name: '한국어', short: 'KO' },
-  { code: 'zh', name: '中文', short: 'ZH' },
-  { code: 'ru', name: 'Русский', short: 'RU' },
-  { code: 'ar', name: 'العربية', short: 'AR' },
-  { code: 'hi', name: 'हिन्दी', short: 'HI' },
+  { code: 'en', name: 'English' },
+  { code: 'pt', name: 'Português' },
+  { code: 'es', name: 'Español' },
+  { code: 'de', name: 'Deutsch' },
+  { code: 'fr', name: 'Français' },
+  { code: 'it', name: 'Italiano' },
+  { code: 'ja', name: '日本語' },
+  { code: 'ko', name: '한국어' },
+  { code: 'zh', name: '中文' },
+  { code: 'ru', name: 'Русский' },
+  { code: 'ar', name: 'العربية' },
+  { code: 'hi', name: 'हिन्दी' },
 ];
 
 export default function LanguageSelector() {
@@ -109,13 +108,27 @@ export default function LanguageSelector() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Read active language from cookie if already selected
+    // 1. Check existing cookie
     const match = document.cookie.match(/googtrans=\/en\/([a-zA-Z-]+)/);
     if (match && match[1]) {
       const code = match[1] === 'zh-CN' ? 'zh' : match[1];
       setSelectedLang(code);
     }
 
+    // 2. Continuous DOM observer to stop Google from injecting inline "top: 40px"
+    const observer = new MutationObserver(() => {
+      if (document.body.style.top !== '0px' && document.body.style.top !== '') {
+        document.body.style.setProperty('top', '0px', 'important');
+      }
+      if (document.documentElement.style.top !== '0px' && document.documentElement.style.top !== '') {
+        document.documentElement.style.setProperty('top', '0px', 'important');
+      }
+    });
+
+    observer.observe(document.body, { attributes: true, attributeFilter: ['style'] });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
+
+    // 3. Inject Google script silently
     if (!document.getElementById('google-translate-hidden-script')) {
       const script = document.createElement('script');
       script.id = 'google-translate-hidden-script';
@@ -137,7 +150,11 @@ export default function LanguageSelector() {
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   const switchLanguage = (langCode: string) => {
@@ -156,7 +173,7 @@ export default function LanguageSelector() {
     <div className="relative notranslate" ref={dropdownRef}>
       <div id="google_hidden_engine" className="hidden" />
 
-      {/* Styled Pill with Flag & Vertically Aligned Label */}
+      {/* Styled Button with Crisp Vector Flag */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
