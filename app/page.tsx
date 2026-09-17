@@ -16,7 +16,7 @@ function HomeContent() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
   // Sync category state whenever the URL query parameter changes
-  useEffect(() => {
+useEffect(() => {
     if (categoryParam) {
       // Normalize parameter: e.g. "Image Tools" -> "Image"
       const cleanParam = categoryParam.replace(/tools$/i, '').trim().toLowerCase();
@@ -25,6 +25,10 @@ function HomeContent() {
       );
       if (matched) {
         setSelectedCategory(matched);
+        // Category change hote hi seedhe tools section par scroll karega
+        setTimeout(() => {
+          document.getElementById('tools')?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
       }
     }
   }, [categoryParam]);
