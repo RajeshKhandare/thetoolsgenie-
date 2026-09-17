@@ -25,25 +25,47 @@ body {
   scrollbar-width: none;
 }
 
-/* Hide Google Translate Top Banner & Fix Layout Shift */
-.goog-te-banner-frame.skiptranslate,
+/* =========================================================
+   HARD-RESET: KILL GOOGLE TRANSLATE BAR & TOP BANNER
+   ========================================================= */
+
+/* 1. Force remove iframe banner and all known class variations */
 .goog-te-banner-frame,
-iframe.goog-te-banner-frame {
+.goog-te-banner-frame.skiptranslate,
+iframe.goog-te-banner-frame,
+iframe[id=":1.container"],
+iframe[id=":2.container"],
+.skiptranslate.goog-te-gadget,
+#goog-gt-tt,
+.VIpgJd-ZVi9od-OR9G1-bGIwt,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+.VIpgJd-ZVi9od-xl07Ob-OEVmcd {
   display: none !important;
   visibility: hidden !important;
-  height: 0 !important;
-  width: 0 !important;
+  opacity: 0 !important;
+  height: 0px !important;
+  width: 0px !important;
+  pointer-events: none !important;
 }
 
-/* Hide Google Tooltips & Popups */
+/* 2. Stop body and html from being pushed down by 40px */
+html,
+body {
+  top: 0px !important;
+  position: static !important;
+  margin-top: 0px !important;
+  padding-top: 0px !important;
+}
+
+/* 3. Hide floating translation tooltips and text highlights */
+.goog-text-highlight {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 #goog-gt-tt,
-.goog-te-balloon-frame,
 .goog-tooltip,
 .goog-tooltip:hover {
   display: none !important;
-}
-
-.goog-text-highlight {
-  background-color: transparent !important;
-  box-shadow: none !important;
 }
