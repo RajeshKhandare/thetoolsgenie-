@@ -20,7 +20,9 @@ export const CATEGORIES = [
 ] as const;
 
 export const TOOLS_REGISTRY: ToolMeta[] = [
-  // 1. PDF TOOLS
+  // ==========================================
+  // 1. PDF TOOLS (14 Complete Tools)
+  // ==========================================
   {
     name: 'Merge PDF Online',
     slug: 'merge-pdf',
@@ -38,6 +40,12 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     slug: 'pdf-to-jpg',
     category: 'PDF',
     description: 'Extract pages from your PDF document and export them as high-quality JPG images.',
+  },
+  {
+    name: 'JPG to PDF Converter',
+    slug: 'jpg-to-pdf',
+    category: 'PDF',
+    description: 'Convert JPG, JPEG, and PNG images into a clean standardized PDF file.',
   },
   {
     name: 'Protect & Lock PDF',
@@ -100,7 +108,9 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     description: 'Convert colored PDF documents into monochrome black and white for cheap printing.',
   },
 
-  // 2. IMAGE TOOLS
+  // ==========================================
+  // 2. IMAGE TOOLS (12 Complete Tools)
+  // ==========================================
   {
     name: 'Compress Image Online',
     slug: 'compress-image',
@@ -156,13 +166,39 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     description: 'Convert colored photographs into black and white monochrome representations.',
   },
   {
+    name: 'Invert Image Colors',
+    slug: 'invert-image-colors',
+    category: 'Image',
+    description: 'Invert RGB pixel values to generate negative color effects on photos.',
+  },
+  {
     name: 'Flip & Rotate Image',
     slug: 'flip-rotate-image',
     category: 'Image',
     description: 'Flip images horizontally, vertically, or rotate 90 degrees with instant canvas preview.',
   },
+  {
+    name: 'Instant QR Code Generator',
+    slug: 'instant-qr-code-generator',
+    category: 'Image',
+    description: 'Generate scannable high-resolution QR codes from text, links, or contact cards.',
+  },
+  {
+    name: 'Image Blur & Privacy Filter',
+    slug: 'image-blur-filter',
+    category: 'Image',
+    description: 'Apply Gaussian blur effects to hide faces, plates, or private details.',
+  },
+  {
+    name: 'Image Color Palette Extractor',
+    slug: 'image-color-palette-extractor',
+    category: 'Image',
+    description: 'Extract dominant HEX and RGB color schemes directly from any photo.',
+  },
 
-  // 3. COMPILERS & RUNNERS
+  // ==========================================
+  // 3. COMPILERS & RUNNERS (8 Complete Tools)
+  // ==========================================
   {
     name: 'Online Python Compiler',
     slug: 'online-python-compiler',
@@ -194,13 +230,27 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     description: 'Write, debug, and run standard Java code snippets directly in your web browser.',
   },
   {
+    name: 'Online C# Compiler',
+    slug: 'online-csharp-compiler',
+    category: 'Compiler',
+    description: 'Run C# code scripts in client sandbox with immediate standard output display.',
+  },
+  {
+    name: 'Online PHP Runner',
+    slug: 'online-php-runner',
+    category: 'Compiler',
+    description: 'Test PHP code syntax and algorithms directly inside browser memory.',
+  },
+  {
     name: 'Online SQL Runner',
     slug: 'online-sql-runner',
     category: 'Compiler',
     description: 'Execute SQL queries, test database tables, and verify relational commands.',
   },
 
-  // 4. DEVELOPER TOOLS (Active for Developer Filter)
+  // ==========================================
+  // 4. DEVELOPER UTILITIES (12 Complete Tools)
+  // ==========================================
   {
     name: 'JSON Prettifier & Validator',
     slug: 'json-formatter-validator',
@@ -274,47 +324,75 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     description: 'Parse browser client strings to detect OS, engine, and device models.',
   },
 
-  // 5. TEXT TOOLS (Active for Text Filter)
+  // ==========================================
+  // 5. TEXT TOOLS (10 Complete Tools)
+  // ==========================================
   {
-    name: 'Online Word & Character Counter',
+    name: 'Live Word & Character Counter',
     slug: 'word-character-counter',
     category: 'Text',
     description: 'Count real-time words, characters, sentences, paragraphs, and reading duration.',
   },
   {
-    name: 'Text Case Converter',
+    name: 'Case Converter',
     slug: 'text-case-converter',
     category: 'Text',
-    description: 'Convert text between UPPERCASE, lowercase, Title Case, and camelCase.',
-  },
-  {
-    name: 'Lorem Ipsum Generator',
-    slug: 'lorem-ipsum-generator',
-    category: 'Text',
-    description: 'Generate dummy placeholder text paragraphs and sentences for mockups.',
+    description: 'Instantly transform text into UPPERCASE, lowercase, Title Case, and camelCase.',
   },
   {
     name: 'Remove Duplicate Lines',
     slug: 'remove-duplicate-lines',
     category: 'Text',
-    description: 'Strip repetitive lines from lists and sort clean text items.',
+    description: 'Clean lists and data arrays by removing repetitive text lines instantly.',
   },
   {
-    name: 'Markdown to HTML Live Converter',
+    name: 'Lorem Ipsum Generator',
+    slug: 'lorem-ipsum-generator',
+    category: 'Text',
+    description: 'Generate customizable placeholder text paragraphs and sentences for mockups.',
+  },
+  {
+    name: 'Markdown Live Previewer',
     slug: 'markdown-to-html-converter',
     category: 'Text',
-    description: 'Render Markdown markdown code to sanitized clean HTML tags.',
+    description: 'Write Markdown syntax and preview sanitized HTML output in real time.',
   },
   {
-    name: 'Text Diff Checker',
+    name: 'Reverse Text & Mirror Tool',
+    slug: 'reverse-text-mirror-tool',
+    category: 'Text',
+    description: 'Reverse string characters or word order with backwards text effects.',
+  },
+  {
+    name: 'Text & Code Diff Checker',
     slug: 'text-diff-checker',
     category: 'Text',
-    description: 'Compare two text documents side-by-side to highlight added and removed text.',
+    description: 'Compare two text blocks side-by-side to highlight added and removed text.',
+  },
+  {
+    name: 'Alphabetical Line Sorter',
+    slug: 'alphabetical-line-sorter',
+    category: 'Text',
+    description: 'Sort lists and lines alphabetically (A-Z, Z-A) or by string length.',
+  },
+  {
+    name: 'Strip HTML Tags from Text',
+    slug: 'strip-html-tags',
+    category: 'Text',
+    description: 'Clean raw HTML source code down to plain legible text strings.',
+  },
+  {
+    name: 'Find & Replace Text',
+    slug: 'find-replace-text',
+    category: 'Text',
+    description: 'Search and replace words or patterns across long text documents.',
   },
 
-  // 6. CONVERTERS (Active for Converters Filter)
+  // ==========================================
+  // 6. CONVERTERS (10 Complete Tools)
+  // ==========================================
   {
-    name: 'Unit Length & Distance Converter',
+    name: 'Length & Distance Converter',
     slug: 'unit-length-converter',
     category: 'Converters',
     description: 'Convert between Meters, Kilometers, Miles, Feet, Inches, and Yards.',
@@ -323,22 +401,60 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     name: 'Weight & Mass Converter',
     slug: 'weight-mass-converter',
     category: 'Converters',
-    description: 'Convert between Kilograms, Grams, Pounds (lbs), Ounces, and Metric Tons.',
+    description: 'Convert Kilograms, Grams, Pounds (lbs), Ounces, and Metric Tons.',
   },
   {
     name: 'Temperature Scale Converter',
     slug: 'temperature-converter',
     category: 'Converters',
-    description: 'Instant conversion between Celsius, Fahrenheit, and Kelvin temperature scales.',
+    description: 'Instantly convert between Celsius (°C), Fahrenheit (°F), and Kelvin (K).',
   },
   {
-    name: 'Digital Data Size Converter',
+    name: 'Data Storage Unit Converter',
     slug: 'data-size-converter',
     category: 'Converters',
-    description: 'Convert Bytes, KB, MB, GB, TB, and Petabytes with exact binary powers.',
+    description: 'Calculate digital binary and decimal bytes (KB, MB, GB, TB, PB).',
+  },
+  {
+    name: 'Speed & Velocity Converter',
+    slug: 'speed-velocity-converter',
+    category: 'Converters',
+    description: 'Convert km/h, mph, meters per second, knots, and Mach speeds.',
+  },
+  {
+    name: 'Time Duration Converter',
+    slug: 'time-duration-converter',
+    category: 'Converters',
+    description: 'Convert seconds, minutes, hours, days, weeks, months, and years.',
+  },
+  {
+    name: 'Area & Land Converter',
+    slug: 'area-land-converter',
+    category: 'Converters',
+    description: 'Convert Square Feet, Square Meters, Acres, Hectares, and Bigha.',
+  },
+  {
+    name: 'Pressure Unit Converter',
+    slug: 'pressure-unit-converter',
+    category: 'Converters',
+    description: 'Convert Pascal (Pa), Bar, PSI, and Atmosphere units.',
+  },
+  {
+    name: 'Energy & Work Converter',
+    slug: 'energy-work-converter',
+    category: 'Converters',
+    description: 'Convert Joules, Kilojoules, Calories, Kilocalories, and Kilowatt-hours.',
+  },
+  {
+    name: 'Power & Wattage Converter',
+    slug: 'power-wattage-converter',
+    category: 'Converters',
+    description: 'Convert Watts, Kilowatts (kW), Megawatts, and Mechanical Horsepower.',
   },
 
-  // 7. FINANCIAL TOOLS & CALCULATORS (Active for Finance & Calculators Filters)
+  // ==========================================
+  // 7. FINANCIAL UTILITIES (8 Complete Tools)
+  // ==========================================
   {
     name: 'SIP Wealth Calculator',
     slug: 'sip-calculator',
@@ -352,22 +468,10 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     description: 'Calculate monthly loan installments, total interest costs, and amortization schedules.',
   },
   {
-    name: 'Compound Interest Calculator',
-    slug: 'compound-interest-calculator',
-    category: 'Calculators',
-    description: 'Calculate annual, monthly, and daily compound interest growth on savings.',
-  },
-  {
     name: 'Lumpsum Investment Calculator',
     slug: 'lumpsum-calculator',
     category: 'Finance',
     description: 'Estimate total maturity returns on one-time lumpsum mutual fund investments.',
-  },
-  {
-    name: 'Percentage Calculator Online',
-    slug: 'percentage-calculator',
-    category: 'Calculators',
-    description: 'Calculate percentage increase, percentage decrease, and fraction differences instantly.',
   },
   {
     name: 'GST Calculator Online',
@@ -382,13 +486,79 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     description: 'Calculate monthly in-hand take-home salary after taxes and deductions.',
   },
   {
+    name: 'Fixed Deposit (FD) Calculator',
+    slug: 'fd-calculator',
+    category: 'Finance',
+    description: 'Calculate fixed deposit interest payout and total maturity sum over tenure.',
+  },
+  {
+    name: 'Recurring Deposit (RD) Calculator',
+    slug: 'rd-calculator',
+    category: 'Finance',
+    description: 'Estimate compounded interest gains on recurring monthly bank deposits.',
+  },
+  {
+    name: 'Retirement Corpus Planner',
+    slug: 'retirement-calculator',
+    category: 'Finance',
+    description: 'Calculate future living expenses and target retirement savings funds.',
+  },
+
+  // ==========================================
+  // 8. CALCULATORS (8 Complete Tools)
+  // ==========================================
+  {
+    name: 'Compound Interest Calculator',
+    slug: 'compound-interest-calculator',
+    category: 'Calculators',
+    description: 'Calculate annual, monthly, and daily compound interest growth on savings.',
+  },
+  {
     name: 'Simple Interest Calculator',
     slug: 'simple-interest-calculator',
     category: 'Calculators',
     description: 'Calculate basic simple interest accrued on principal amounts with fixed rates.',
   },
+  {
+    name: 'Percentage Calculator Online',
+    slug: 'percentage-calculator',
+    category: 'Calculators',
+    description: 'Calculate percentage increase, percentage decrease, and fraction differences instantly.',
+  },
+  {
+    name: 'Age & Date of Birth Calculator',
+    slug: 'age-calculator',
+    category: 'Calculators',
+    description: 'Calculate exact chronological age in years, months, weeks, and days.',
+  },
+  {
+    name: 'Body Mass Index (BMI) Calculator',
+    slug: 'bmi-calculator',
+    category: 'Calculators',
+    description: 'Calculate BMI metric score and healthy weight categories based on height.',
+  },
+  {
+    name: 'Scientific Calculator Online',
+    slug: 'scientific-calculator',
+    category: 'Calculators',
+    description: 'Perform advanced trigonometry, logarithms, exponentials, and algebra expressions.',
+  },
+  {
+    name: 'Discount & Sales Tax Calculator',
+    slug: 'discount-calculator',
+    category: 'Calculators',
+    description: 'Calculate final prices after store coupon discounts and applicable sales taxes.',
+  },
+  {
+    name: 'Tip & Bill Split Calculator',
+    slug: 'tip-calculator',
+    category: 'Calculators',
+    description: 'Split restaurant dinner bills and calculate service tip percentages evenly.',
+  },
 
-  // 8. YOUTUBE TOOLS (Active for YouTube Filter)
+  // ==========================================
+  // 9. YOUTUBE TOOLS (4 Complete Tools)
+  // ==========================================
   {
     name: 'YouTube Thumbnail Downloader',
     slug: 'youtube-thumbnail-downloader',
