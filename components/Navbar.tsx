@@ -7,13 +7,13 @@ import { Sparkles, Sun, Moon, ChevronDown, Menu, X, ArrowRight } from 'lucide-re
 import LanguageSelector from '@/components/LanguageSelector';
 import { TOOLS_REGISTRY } from '@/data/toolsRegistry';
 
-// Category mapping aligned with /tools filter pills
+// Category mapping aligned with Homepage categories
 const CATEGORIES_CONFIG = [
-  { label: 'PDF', query: 'PDF Tools' },
-  { label: 'Image', query: 'Image Tools' },
-  { label: 'Compiler', query: 'Compiler Tools' },
-  { label: 'Finance', query: 'Finance Tools' },
-  { label: 'YouTube', query: 'YouTube Tools' },
+  { label: 'PDF', query: 'PDF' },
+  { label: 'Image', query: 'Image' },
+  { label: 'Compiler', query: 'Compiler' },
+  { label: 'Finance', query: 'Finance' },
+  { label: 'YouTube', query: 'YouTube' },
 ];
 
 export default function Navbar() {
@@ -40,11 +40,19 @@ export default function Navbar() {
     }
   };
 
-  // Explicit programmatic navigation to force state update on /tools
-  const handleCategoryNavigate = (categoryQuery: string) => {
+  // Direct homepage category filter & smooth scroll
+  const handleCategoryNavigate = (categoryName: string) => {
     setActiveDropdown(null);
     setMobileMenuOpen(false);
-    router.push(`/tools?category=${encodeURIComponent(categoryQuery)}`);
+    
+    // Homepage ke tools section par bhejega
+    router.push(`/?category=${encodeURIComponent(categoryName)}#tools`);
+    
+    // Agar user pehle se homepage par hai, toh smooth scroll trigger karega
+    const el = document.getElementById('tools');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
@@ -101,7 +109,7 @@ export default function Navbar() {
                         Popular {cat.label} Utilities
                       </span>
                       
-                      {/* Robust Clickable View All Button */}
+                      {/* View all button connected to Homepage Pills */}
                       <button
                         type="button"
                         onClick={() => handleCategoryNavigate(cat.query)}
