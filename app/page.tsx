@@ -28,7 +28,7 @@ function HomeContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
-  // Sync category state whenever the URL query parameter changes
+  // Sync category state and scroll cleanly below the sticky navbar
   useEffect(() => {
     if (categoryParam) {
       const cleanParam = categoryParam.replace(/tools$/i, '').trim().toLowerCase();
@@ -38,13 +38,18 @@ function HomeContent() {
       if (matched) {
         setSelectedCategory(matched);
         setTimeout(() => {
-          document.getElementById('tools')?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
+          const el = document.getElementById('tools');
+          if (el) {
+            const yOffset = -88; // Accounts for sticky navbar height + padding
+            const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+          }
+        }, 120);
       }
     }
   }, [categoryParam]);
 
-  // Filter tools based on search & category
+  // Filter tools based on search query & selected category
   const filteredTools = useMemo(() => {
     return TOOLS_REGISTRY.filter((tool) => {
       const matchesCategory =
@@ -59,7 +64,7 @@ function HomeContent() {
     });
   }, [searchQuery, selectedCategory]);
 
-  // If filtered by category or search, show all matching; on default homepage, show top 12
+  // Show full category items when filtered; limit to top 12 on default landing
   const displayedTools = useMemo(() => {
     if (searchQuery.trim().length > 0 || selectedCategory !== 'All') return filteredTools;
     return filteredTools.slice(0, 12);
@@ -114,8 +119,8 @@ function HomeContent() {
           </div>
         </section>
 
-        {/* Category Filter Pills */}
-        <section id="tools" className="mx-auto max-w-7xl px-4 sm:px-6 pt-4">
+        {/* Category Filter Pills & Tools Section */}
+        <section id="tools" className="mx-auto max-w-7xl px-4 sm:px-6 pt-6 scroll-mt-24">
           <div className="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-4 no-scrollbar">
             {CATEGORIES.map((category) => {
               const isActive = selectedCategory === category;
@@ -171,7 +176,7 @@ function HomeContent() {
             ))}
           </div>
 
-          {/* "Explore All Tools" Button (when default popular is active) */}
+          {/* "Explore All Tools" Button */}
           {searchQuery.trim().length === 0 && selectedCategory === 'All' && (
             <div className="mt-10 text-center">
               <Link
@@ -185,13 +190,10 @@ function HomeContent() {
           )}
         </section>
 
-        {/* ========================================================
-            NEW SECTION: Performance & Privacy Architecture (Fills Gap)
-            ======================================================== */}
+        {/* Performance & Privacy Architecture Section */}
         <section className="mx-auto max-w-7xl px-4 sm:px-6 mt-20 mb-16">
           <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800/80 bg-gradient-to-b from-white to-zinc-50/50 dark:from-zinc-900 dark:to-zinc-950/50 p-8 sm:p-12 shadow-sm">
             
-            {/* Header */}
             <div className="max-w-2xl mx-auto text-center">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-violet-200 dark:border-violet-900/60 bg-violet-50 dark:bg-violet-950/40 px-3 py-1 text-[11px] font-bold text-violet-700 dark:text-violet-300 uppercase tracking-wider">
                 <ShieldCheck className="h-3.5 w-3.5" /> Client-Side Architecture
@@ -204,9 +206,7 @@ function HomeContent() {
               </p>
             </div>
 
-            {/* 3 Pillar Cards */}
             <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-              
               <div className="rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900/80 p-6 shadow-sm">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 mb-4">
                   <Lock className="h-5 w-5" />
@@ -242,10 +242,8 @@ function HomeContent() {
                   Because computational load is handled client-side on your browser, there are no artificial file size limits, daily usage caps, or subscription paywalls.
                 </p>
               </div>
-
             </div>
 
-            {/* Micro Stats Strip */}
             <div className="mt-8 pt-8 border-t border-zinc-200/60 dark:border-zinc-800/60 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
               <div>
                 <p className="text-xl sm:text-2xl font-black text-violet-600 dark:text-violet-400">80+</p>
