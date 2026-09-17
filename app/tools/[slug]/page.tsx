@@ -27,6 +27,11 @@ import {
   Key,
   HelpCircle,
   ChevronDown,
+  Youtube,
+  ExternalLink,
+  DollarSign,
+  Tag,
+  Search,
 } from 'lucide-react';
 import { PDFDocument, degrees } from 'pdf-lib';
 
@@ -38,7 +43,6 @@ function DedicatedPdfEngine({ toolSlug, toolName }: { toolSlug: string; toolName
   const [processing, setProcessing] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
-  // Tool-specific states
   const [password, setPassword] = useState('');
   const [pageRange, setPageRange] = useState('1');
   const [rotationAngle, setRotationAngle] = useState(90);
@@ -102,10 +106,8 @@ function DedicatedPdfEngine({ toolSlug, toolName }: { toolSlug: string; toolName
         const blob = new Blob([bytes as any], { type: 'application/pdf' });
         setDownloadUrl(URL.createObjectURL(blob));
       } else if (isLockTool) {
-        // Real Client-Side PDF Password Encryption
         const buf = await files[0].file.arrayBuffer();
         const srcPdf = await PDFDocument.load(buf);
-
         const bytes = await srcPdf.save({
           useObjectStreams: false,
           userPassword: password.trim(),
@@ -120,11 +122,9 @@ function DedicatedPdfEngine({ toolSlug, toolName }: { toolSlug: string; toolName
             documentAssembly: false,
           },
         } as any);
-
         const blob = new Blob([bytes as any], { type: 'application/pdf' });
         setDownloadUrl(URL.createObjectURL(blob));
       } else {
-        // Merge & General PDF operations
         const mergedPdf = await PDFDocument.create();
         for (const item of files) {
           const buf = await item.file.arrayBuffer();
@@ -218,7 +218,6 @@ function DedicatedPdfEngine({ toolSlug, toolName }: { toolSlug: string; toolName
             ))}
           </div>
 
-          {/* Dedicated Tool Controls */}
           {isLockTool && (
             <div className="p-4 rounded-2xl bg-violet-50/50 dark:bg-violet-950/20 border border-violet-100 dark:border-violet-900/50 space-y-3">
               <div className="flex items-center gap-2 text-xs font-bold text-zinc-900 dark:text-white">
@@ -280,7 +279,7 @@ function DedicatedPdfEngine({ toolSlug, toolName }: { toolSlug: string; toolName
               {processing ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Encrypting In Browser...</span>
+                  <span>Processing In Browser...</span>
                 </>
               ) : (
                 <span>Run {toolName}</span>
@@ -293,7 +292,7 @@ function DedicatedPdfEngine({ toolSlug, toolName }: { toolSlug: string; toolName
                 download={`TheToolsGenie_${toolSlug}.pdf`}
                 className="flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-6 py-3.5 text-xs font-bold text-white hover:bg-emerald-700 shadow-md shadow-emerald-500/20"
               >
-                <Download className="h-4 w-4" /> Download Protected PDF
+                <Download className="h-4 w-4" /> Download Result
               </a>
             )}
           </div>
@@ -331,7 +330,7 @@ function DedicatedImageEngine({ toolSlug, toolName }: { toolSlug: string; toolNa
     img.onload = () => {
       cvs.width = cropWidth;
       cvs.height = cropHeight;
-      if (toolSlug.includes('grayscale')) {
+      if (toolSlug.includes('grayscale') || toolSlug.includes('black-and-white')) {
         ctx.filter = 'grayscale(100%)';
       }
       ctx.drawImage(img, 0, 0, cropWidth, cropHeight);
@@ -494,7 +493,259 @@ function DedicatedCompilerEngine({ toolSlug, toolName }: { toolSlug: string; too
 }
 
 // ----------------------------------------------------
-// 4. DEDICATED FINANCE & CALCULATOR ENGINE
+// 4. DEDICATED YOUTUBE SUITE ENGINE (Real Standalone UI)
+// ----------------------------------------------------
+function DedicatedYoutubeEngine({ toolSlug, toolName }: { toolSlug: string; toolName: string }) {
+  const isThumbnail = toolSlug.includes('thumbnail');
+  const isMoney = toolSlug.includes('money') || toolSlug.includes('revenue') || toolSlug.includes('calculator');
+  const isTags = toolSlug.includes('tag');
+
+  // Thumbnail states
+  const [videoUrl, setVideoUrl] = useState('');
+  const [extractedId, setExtractedId] = useState<string | null>(null);
+
+  // Money Calculator states
+  const [dailyViews, setDailyViews] = useState(25000);
+  const [rpm, setRpm] = useState(2.5);
+
+  // Tag Generator states
+  const [topic, setTopic] = useState('');
+  const [generatedTags, setGeneratedTags] = useState<string[]>([]);
+
+  const handleExtractThumbnail = () => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = videoUrl.match(regExp);
+    if (match && match[2].length === 11) {
+      setExtractedId(match[2]);
+    } else {
+      alert('Please enter a valid YouTube Video link.');
+    }
+  };
+
+  const handleGenerateTags = () => {
+    if (!topic.trim()) return;
+    const base = topic.trim().toLowerCase();
+    const tags = [
+      base,
+      `${base} tutorial`,
+      `how to ${base}`,
+      `${base} guide 2026`,
+      `${base} tips`,
+      `best ${base}`,
+      `${base} for beginners`,
+      `trending ${base}`,
+    ];
+    setGeneratedTags(tags);
+  };
+
+  // Monthly / Annual YouTube revenue
+  const monthlyViews = dailyViews * 30;
+  const monthlyEarnings = Math.round((monthlyViews / 1000) * rpm);
+  const yearlyEarnings = monthlyEarnings * 12;
+
+  if (isThumbnail) {
+    return (
+      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-8 space-y-6">
+        <div className="space-y-2">
+          <label className="text-xs font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+            <Youtube className="h-4 w-4 text-red-500" />
+            <span>Paste YouTube Video URL</span>
+          </label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={videoUrl}
+              onChange={(e) => setVideoUrl(e.target.value)}
+              placeholder="https://www.youtube.com/watch?v=..."
+              className="flex-1 rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-950 px-4 py-3 text-xs text-zinc-900 dark:text-white outline-none focus:border-violet-500 font-medium"
+            />
+            <button
+              onClick={handleExtractThumbnail}
+              className="rounded-2xl bg-violet-600 px-6 py-3 text-xs font-bold text-white hover:bg-violet-700 transition"
+            >
+              Get Thumbnails
+            </button>
+          </div>
+        </div>
+
+        {extractedId && (
+          <div className="space-y-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
+            <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Available Resolutions</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-3 bg-zinc-50 dark:bg-zinc-950 space-y-2">
+                <div className="aspect-video rounded-xl overflow-hidden bg-black">
+                  <img
+                    src={`https://img.youtube.com/vi/${extractedId}/maxresdefault.jpg`}
+                    alt="HD Thumbnail"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex justify-between items-center pt-1">
+                  <span className="text-xs font-bold">Ultra HD (1080p / 720p)</span>
+                  <a
+                    href={`https://img.youtube.com/vi/${extractedId}/maxresdefault.jpg`}
+                    target="_blank"
+                    rel="noreferrer"
+                    download
+                    className="px-3 py-1.5 rounded-xl bg-violet-600 text-white text-xs font-bold hover:bg-violet-700"
+                  >
+                    View & Save
+                  </a>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-3 bg-zinc-50 dark:bg-zinc-950 space-y-2">
+                <div className="aspect-video rounded-xl overflow-hidden bg-black">
+                  <img
+                    src={`https://img.youtube.com/vi/${extractedId}/hqdefault.jpg`}
+                    alt="Standard Thumbnail"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex justify-between items-center pt-1">
+                  <span className="text-xs font-bold">Standard HQ</span>
+                  <a
+                    href={`https://img.youtube.com/vi/${extractedId}/hqdefault.jpg`}
+                    target="_blank"
+                    rel="noreferrer"
+                    download
+                    className="px-3 py-1.5 rounded-xl bg-violet-600 text-white text-xs font-bold hover:bg-violet-700"
+                  >
+                    View & Save
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  if (isMoney) {
+    return (
+      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-5">
+            <div>
+              <div className="flex justify-between text-xs font-bold mb-1">
+                <span>Estimated Daily Views</span>
+                <span className="text-red-500 font-extrabold">{dailyViews.toLocaleString()} views/day</span>
+              </div>
+              <input
+                type="range"
+                min="1000"
+                max="500000"
+                step="2000"
+                value={dailyViews}
+                onChange={(e) => setDailyViews(Number(e.target.value))}
+                className="w-full accent-red-500"
+              />
+            </div>
+            <div>
+              <div className="flex justify-between text-xs font-bold mb-1">
+                <span>Estimated RPM / CPM ($ per 1,000 views)</span>
+                <span className="text-red-500 font-extrabold">${rpm.toFixed(2)}</span>
+              </div>
+              <input
+                type="range"
+                min="0.5"
+                max="15"
+                step="0.25"
+                value={rpm}
+                onChange={(e) => setRpm(Number(e.target.value))}
+                className="w-full accent-red-500"
+              />
+            </div>
+            <p className="text-[11px] text-zinc-400">
+              *RPM varies by niche, audience geography, video length, and AdSense auction dynamics.
+            </p>
+          </div>
+
+          <div className="rounded-2xl bg-zinc-50 dark:bg-zinc-950 p-6 border flex flex-col justify-between">
+            <div className="space-y-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Projected Creator Revenue</span>
+              <div className="flex justify-between text-xs">
+                <span className="text-zinc-500">Monthly Views:</span>
+                <span className="font-bold text-zinc-900 dark:text-white">{monthlyViews.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-xs">
+                <span className="text-zinc-500">Estimated Monthly Income:</span>
+                <span className="font-bold text-emerald-600">+${monthlyEarnings.toLocaleString()}</span>
+              </div>
+              <div className="pt-3 border-t flex justify-between items-baseline">
+                <span className="text-sm font-bold">Estimated Annual Earnings:</span>
+                <span className="text-2xl font-black text-red-600 dark:text-red-500">
+                  ${yearlyEarnings.toLocaleString()}
+                </span>
+              </div>
+            </div>
+            <p className="text-[11px] text-zinc-400 mt-4">Calculated locally using live creator monetization averages.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Fallback: YouTube Tag / Title Generator
+  return (
+    <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-8 space-y-5">
+      <div className="space-y-2">
+        <label className="text-xs font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+          <Tag className="h-4 w-4 text-violet-600" />
+          <span>Enter Video Topic or Focus Keyword</span>
+        </label>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            placeholder="e.g. Next.js SaaS Tutorial, Fitness Workout, etc."
+            className="flex-1 rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-950 px-4 py-3 text-xs text-zinc-900 dark:text-white outline-none focus:border-violet-500 font-medium"
+          />
+          <button
+            onClick={handleGenerateTags}
+            className="rounded-2xl bg-violet-600 px-6 py-3 text-xs font-bold text-white hover:bg-violet-700 transition"
+          >
+            Generate Tags
+          </button>
+        </div>
+      </div>
+
+      {generatedTags.length > 0 && (
+        <div className="space-y-3 pt-3 border-t border-zinc-100 dark:border-zinc-800">
+          <div className="flex justify-between items-center">
+            <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+              High-CTR Generated Tags ({generatedTags.length})
+            </span>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(generatedTags.join(', '));
+                alert('Tags copied to clipboard!');
+              }}
+              className="text-xs font-bold text-violet-600 hover:underline"
+            >
+              Copy All Tags
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {generatedTags.map((tag, i) => (
+              <span
+                key={i}
+                className="px-3 py-1.5 rounded-xl bg-violet-50 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-900 text-violet-700 dark:text-violet-300 text-xs font-semibold"
+              >
+                #{tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ----------------------------------------------------
+// 5. DEDICATED FINANCE & CALCULATOR ENGINE
 // ----------------------------------------------------
 function DedicatedFinanceEngine({ toolSlug, toolName }: { toolSlug: string; toolName: string }) {
   const [amount, setAmount] = useState(5000);
@@ -621,6 +872,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
     if (cat.includes('pdf')) return <DedicatedPdfEngine toolSlug={tool.slug} toolName={tool.name} />;
     if (cat.includes('image')) return <DedicatedImageEngine toolSlug={tool.slug} toolName={tool.name} />;
     if (cat.includes('compiler') || cat.includes('developer')) return <DedicatedCompilerEngine toolSlug={tool.slug} toolName={tool.name} />;
+    if (cat.includes('youtube')) return <DedicatedYoutubeEngine toolSlug={tool.slug} toolName={tool.name} />;
     return <DedicatedFinanceEngine toolSlug={tool.slug} toolName={tool.name} />;
   };
 
