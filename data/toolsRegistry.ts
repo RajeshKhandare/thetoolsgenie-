@@ -20,9 +20,7 @@ export const CATEGORIES = [
 ] as const;
 
 export const TOOLS_REGISTRY: ToolMeta[] = [
-  // ==========================================
-  // 1. PDF TOOLS (Exact Google Search Intent)
-  // ==========================================
+  // 1. PDF TOOLS
   {
     name: 'Merge PDF Online',
     slug: 'merge-pdf',
@@ -102,9 +100,7 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     description: 'Convert colored PDF documents into monochrome black and white for cheap printing.',
   },
 
-  // ==========================================
-  // 2. IMAGE TOOLS (Targeted Search Volume)
-  // ==========================================
+  // 2. IMAGE TOOLS
   {
     name: 'Compress Image Online',
     slug: 'compress-image',
@@ -166,9 +162,7 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     description: 'Flip images horizontally, vertically, or rotate 90 degrees with instant canvas preview.',
   },
 
-  // ==========================================
-  // 3. COMPILERS & RUNNERS (Programiz Competitors)
-  // ==========================================
+  // 3. COMPILERS & RUNNERS
   {
     name: 'Online Python Compiler',
     slug: 'online-python-compiler',
@@ -188,12 +182,6 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     description: 'Live interactive HTML, CSS, and JavaScript editor with split-screen DOM preview.',
   },
   {
-    name: 'JSON Formatter & Validator',
-    slug: 'json-formatter-validator',
-    category: 'Compiler',
-    description: 'Prettify, format, validate, and minify messy JSON data strings with syntax highlighting.',
-  },
-  {
     name: 'Online C++ Compiler',
     slug: 'online-cpp-compiler',
     category: 'Compiler',
@@ -211,16 +199,146 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
     category: 'Compiler',
     description: 'Execute SQL queries, test database tables, and verify relational commands.',
   },
+
+  // 4. DEVELOPER TOOLS (Active for Developer Filter)
   {
-    name: 'Base64 Encoder & Decoder',
+    name: 'JSON Prettifier & Validator',
+    slug: 'json-formatter-validator',
+    category: 'Developer',
+    description: 'Prettify, format, validate, and minify messy JSON data strings with syntax highlighting.',
+  },
+  {
+    name: 'Base64 Text & Data Encoder',
     slug: 'base64-encoder-decoder',
-    category: 'Compiler',
-    description: 'Convert text, hashes, and binary files to and from Base64 string formats.',
+    category: 'Developer',
+    description: 'Encode and decode UTF-8 plain text or binary assets to and from Base64.',
+  },
+  {
+    name: 'Clean URL Slug Generator',
+    slug: 'clean-url-slug-generator',
+    category: 'Developer',
+    description: 'Convert article titles and raw strings into SEO-friendly URL slugs.',
+  },
+  {
+    name: 'HTML Entity Encoder',
+    slug: 'html-entity-encoder',
+    category: 'Developer',
+    description: 'Convert special symbols and characters into secure HTML entities.',
+  },
+  {
+    name: 'CSS Minifier & Cleaner',
+    slug: 'css-minifier-cleaner',
+    category: 'Developer',
+    description: 'Compress stylesheet rules by stripping whitespace and comments.',
+  },
+  {
+    name: 'Unix Timestamp Converter',
+    slug: 'unix-timestamp-converter',
+    category: 'Developer',
+    description: 'Convert Epoch timestamps to human-readable dates and back.',
+  },
+  {
+    name: 'HEX to RGB/HSL Converter',
+    slug: 'hex-to-rgb-hsl-converter',
+    category: 'Developer',
+    description: 'Convert HEX color codes into CSS RGB, RGBA, and HSL formats.',
+  },
+  {
+    name: 'URL Component Encoder/Decoder',
+    slug: 'url-component-encoder-decoder',
+    category: 'Developer',
+    description: 'Safely encode or decode URL query strings and URI parameters.',
+  },
+  {
+    name: 'JWT Token Inspector',
+    slug: 'jwt-token-inspector',
+    category: 'Developer',
+    description: 'Decode JSON Web Tokens and view payload claims locally.',
+  },
+  {
+    name: 'UUID / GUID v4 Generator',
+    slug: 'uuid-guid-v4-generator',
+    category: 'Developer',
+    description: 'Generate cryptographically secure v4 random UUIDs in bulk.',
+  },
+  {
+    name: 'Strong Password Generator',
+    slug: 'strong-password-generator',
+    category: 'Developer',
+    description: 'Generate customizable, high-entropy random passwords.',
+  },
+  {
+    name: 'User-Agent String Parser',
+    slug: 'user-agent-string-parser',
+    category: 'Developer',
+    description: 'Parse browser client strings to detect OS, engine, and device models.',
   },
 
-  // ==========================================
-  // 4. FINANCIAL CALCULATORS (High CPC Keywords)
-  // ==========================================
+  // 5. TEXT TOOLS (Active for Text Filter)
+  {
+    name: 'Online Word & Character Counter',
+    slug: 'word-character-counter',
+    category: 'Text',
+    description: 'Count real-time words, characters, sentences, paragraphs, and reading duration.',
+  },
+  {
+    name: 'Text Case Converter',
+    slug: 'text-case-converter',
+    category: 'Text',
+    description: 'Convert text between UPPERCASE, lowercase, Title Case, and camelCase.',
+  },
+  {
+    name: 'Lorem Ipsum Generator',
+    slug: 'lorem-ipsum-generator',
+    category: 'Text',
+    description: 'Generate dummy placeholder text paragraphs and sentences for mockups.',
+  },
+  {
+    name: 'Remove Duplicate Lines',
+    slug: 'remove-duplicate-lines',
+    category: 'Text',
+    description: 'Strip repetitive lines from lists and sort clean text items.',
+  },
+  {
+    name: 'Markdown to HTML Live Converter',
+    slug: 'markdown-to-html-converter',
+    category: 'Text',
+    description: 'Render Markdown markdown code to sanitized clean HTML tags.',
+  },
+  {
+    name: 'Text Diff Checker',
+    slug: 'text-diff-checker',
+    category: 'Text',
+    description: 'Compare two text documents side-by-side to highlight added and removed text.',
+  },
+
+  // 6. CONVERTERS (Active for Converters Filter)
+  {
+    name: 'Unit Length & Distance Converter',
+    slug: 'unit-length-converter',
+    category: 'Converters',
+    description: 'Convert between Meters, Kilometers, Miles, Feet, Inches, and Yards.',
+  },
+  {
+    name: 'Weight & Mass Converter',
+    slug: 'weight-mass-converter',
+    category: 'Converters',
+    description: 'Convert between Kilograms, Grams, Pounds (lbs), Ounces, and Metric Tons.',
+  },
+  {
+    name: 'Temperature Scale Converter',
+    slug: 'temperature-converter',
+    category: 'Converters',
+    description: 'Instant conversion between Celsius, Fahrenheit, and Kelvin temperature scales.',
+  },
+  {
+    name: 'Digital Data Size Converter',
+    slug: 'data-size-converter',
+    category: 'Converters',
+    description: 'Convert Bytes, KB, MB, GB, TB, and Petabytes with exact binary powers.',
+  },
+
+  // 7. FINANCIAL TOOLS & CALCULATORS (Active for Finance & Calculators Filters)
   {
     name: 'SIP Wealth Calculator',
     slug: 'sip-calculator',
@@ -236,8 +354,8 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
   {
     name: 'Compound Interest Calculator',
     slug: 'compound-interest-calculator',
-    category: 'Finance',
-    description: 'Calculate annual, monthly, and daily compound interest growth on savings and deposits.',
+    category: 'Calculators',
+    description: 'Calculate annual, monthly, and daily compound interest growth on savings.',
   },
   {
     name: 'Lumpsum Investment Calculator',
@@ -248,14 +366,14 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
   {
     name: 'Percentage Calculator Online',
     slug: 'percentage-calculator',
-    category: 'Finance',
+    category: 'Calculators',
     description: 'Calculate percentage increase, percentage decrease, and fraction differences instantly.',
   },
   {
     name: 'GST Calculator Online',
     slug: 'gst-calculator',
     category: 'Finance',
-    description: 'Calculate inclusive and exclusive Goods and Services Tax (GST) for commercial invoices.',
+    description: 'Calculate inclusive and exclusive Goods and Services Tax (GST) for invoices.',
   },
   {
     name: 'Salary & In-Hand Pay Calculator',
@@ -266,13 +384,11 @@ export const TOOLS_REGISTRY: ToolMeta[] = [
   {
     name: 'Simple Interest Calculator',
     slug: 'simple-interest-calculator',
-    category: 'Finance',
+    category: 'Calculators',
     description: 'Calculate basic simple interest accrued on principal amounts with fixed rates.',
   },
 
-  // ==========================================
-  // 5. YOUTUBE TOOLS (High Search CTR)
-  // ==========================================
+  // 8. YOUTUBE TOOLS (Active for YouTube Filter)
   {
     name: 'YouTube Thumbnail Downloader',
     slug: 'youtube-thumbnail-downloader',
