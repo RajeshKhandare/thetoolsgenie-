@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Sparkles, Sun, Moon, ChevronDown, Menu, X, ArrowRight } from 'lucide-react';
 import LanguageSelector from '@/components/LanguageSelector';
 import { TOOLS_REGISTRY } from '@/data/toolsRegistry';
 
-// Category keys mapped directly to the homepage/directory filter pills
+// Category mapping aligned with /tools filter pills
 const CATEGORIES_CONFIG = [
   { label: 'PDF', query: 'PDF Tools' },
   { label: 'Image', query: 'Image Tools' },
@@ -16,6 +17,7 @@ const CATEGORIES_CONFIG = [
 ];
 
 export default function Navbar() {
+  const router = useRouter();
   const [isDark, setIsDark] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -36,6 +38,13 @@ export default function Navbar() {
       localStorage.setItem('theme', 'dark');
       setIsDark(true);
     }
+  };
+
+  // Explicit programmatic navigation to force state update on /tools
+  const handleCategoryNavigate = (categoryQuery: string) => {
+    setActiveDropdown(null);
+    setMobileMenuOpen(false);
+    router.push(`/tools?category=${encodeURIComponent(categoryQuery)}`);
   };
 
   return (
@@ -67,13 +76,14 @@ export default function Navbar() {
             return (
               <div
                 key={cat.label}
-                className="relative"
+                className="relative py-2"
                 onMouseEnter={() => setActiveDropdown(cat.label)}
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 <button
                   type="button"
-                  className="flex items-center gap-1 rounded-xl px-3.5 py-2 text-xs font-semibold text-zinc-600 dark:text-zinc-300 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-zinc-100/60 dark:hover:bg-zinc-900 transition-all"
+                  onClick={() => handleCategoryNavigate(cat.query)}
+                  className="flex items-center gap-1 rounded-xl px-3.5 py-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-300 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-zinc-100/60 dark:hover:bg-zinc-900 transition-all"
                 >
                   <span>{cat.label}</span>
                   <ChevronDown
@@ -91,14 +101,14 @@ export default function Navbar() {
                         Popular {cat.label} Utilities
                       </span>
                       
-                      {/* Connected View All Link */}
-                      <Link
-                        href={`/tools?category=${encodeURIComponent(cat.query)}`}
-                        onClick={() => setActiveDropdown(null)}
-                        className="text-[11px] font-bold text-violet-600 dark:text-violet-400 hover:underline flex items-center gap-1"
+                      {/* Robust Clickable View All Button */}
+                      <button
+                        type="button"
+                        onClick={() => handleCategoryNavigate(cat.query)}
+                        className="text-[11px] font-bold text-violet-600 dark:text-violet-400 hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         View all <ArrowRight className="h-2.5 w-2.5" />
-                      </Link>
+                      </button>
                     </div>
 
                     <div className="space-y-1">
@@ -150,18 +160,23 @@ export default function Navbar() {
       {mobileMenuOpen && (
         <div className="lg:hidden border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-4 py-4 space-y-3">
           <div className="grid grid-cols-2 gap-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-            <Link href="/tools" onClick={() => setMobileMenuOpen(false)} className="p-2 rounded-lg bg-zinc-50 dark:bg-zinc-900">
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                router.push('/tools');
+              }}
+              className="p-2 text-left rounded-lg bg-zinc-50 dark:bg-zinc-900"
+            >
               All 80 Tools
-            </Link>
+            </button>
             {CATEGORIES_CONFIG.map((cat) => (
-              <Link
+              <button
                 key={cat.label}
-                href={`/tools?category=${encodeURIComponent(cat.query)}`}
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2 rounded-lg bg-zinc-50 dark:bg-zinc-900"
+                onClick={() => handleCategoryNavigate(cat.query)}
+                className="p-2 text-left rounded-lg bg-zinc-50 dark:bg-zinc-900"
               >
                 {cat.label} Tools
-              </Link>
+              </button>
             ))}
           </div>
         </div>
