@@ -1,15 +1,33 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { TOOLS_REGISTRY, CATEGORIES, ToolMeta } from '@/data/toolsRegistry';
 import { Search, FileText, Image as ImageIcon, Code, Calculator, Video, Type, ArrowRight } from 'lucide-react';
 
-export default function HomePage() {
+function HomeContent() {
+  const searchParams = useSearchParams();
+  const categoryParam = searchParams.get('category');
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
+
+  // Sync category state whenever the URL query parameter changes
+  useEffect(() => {
+    if (categoryParam) {
+      // Normalize parameter: e.g. "Image Tools" -> "Image"
+      const cleanParam = categoryParam.replace(/tools$/i, '').trim().toLowerCase();
+      const matched = CATEGORIES.find(
+        (c) => c.toLowerCase().trim() === cleanParam
+      );
+      if (matched) {
+        setSelectedCategory(matched);
+      }
+    }
+  }, [categoryParam]);
 
   // Filter tools based on search & category
   const filteredTools = useMemo(() => {
@@ -26,11 +44,11 @@ export default function HomePage() {
     });
   }, [searchQuery, selectedCategory]);
 
-  // Keep homepage compact: limit to first 12 tools unless searching
+  // Keep homepage compact: limit to first 12 tools unless searching or filtering by a category
   const displayedTools = useMemo(() => {
-    if (searchQuery.trim().length > 0) return filteredTools;
+    if (searchQuery.trim().length > 0 || selectedCategory !== 'All') return filteredTools;
     return filteredTools.slice(0, 12);
-  }, [filteredTools, searchQuery]);
+  }, [filteredTools, searchQuery, selectedCategory]);
 
   const getToolIcon = (cat: string) => {
     switch (cat) {
@@ -102,7 +120,7 @@ export default function HomePage() {
             })}
           </div>
 
-          {/* 12-Card Grid */}
+          {/* Tools Grid */}
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {displayedTools.map((tool: ToolMeta) => (
               <Link
@@ -131,8 +149,8 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* "Explore All 80+ Tools" Button */}
-          {searchQuery.trim().length === 0 && (
+          {/* "Explore All Tools" Button */}
+          {searchQuery.trim().length === 0 && selectedCategory === 'All' && (
             <div className="mt-12 mb-20 text-center">
               <Link
                 href="/tools"
@@ -148,5 +166,13 @@ export default function HomePage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-zinc-50 dark:bg-zinc-950" />}>
+      <HomeContent />
+    </Suspense>
   );
 }
