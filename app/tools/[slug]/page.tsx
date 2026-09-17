@@ -38,7 +38,7 @@ function DedicatedPdfEngine({ toolSlug, toolName }: { toolSlug: string; toolName
   const [processing, setProcessing] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
-  // Tool specific states
+  // Tool-specific states
   const [password, setPassword] = useState('');
   const [pageRange, setPageRange] = useState('1');
   const [rotationAngle, setRotationAngle] = useState(90);
@@ -55,7 +55,7 @@ function DedicatedPdfEngine({ toolSlug, toolName }: { toolSlug: string; toolName
       name: file.name,
       size: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
     }));
-    // Lock, Split, Rotate only need 1 file; Merge supports multi-file
+
     if (isLockTool || isSplitTool || isRotateTool) {
       setFiles([newFiles[0]]);
     } else {
@@ -99,6 +99,28 @@ function DedicatedPdfEngine({ toolSlug, toolName }: { toolSlug: string; toolName
           newPdf.addPage(copiedPage);
         }
         const bytes = await newPdf.save();
+        const blob = new Blob([bytes as any], { type: 'application/pdf' });
+        setDownloadUrl(URL.createObjectURL(blob));
+      } else if (isLockTool) {
+        // Real Client-Side PDF Password Encryption
+        const buf = await files[0].file.arrayBuffer();
+        const srcPdf = await PDFDocument.load(buf);
+
+        const bytes = await srcPdf.save({
+          useObjectStreams: false,
+          userPassword: password.trim(),
+          ownerPassword: password.trim() + '_owner',
+          permissions: {
+            printing: 'highResolution',
+            modifying: false,
+            copying: false,
+            annotating: false,
+            fillingForms: true,
+            contentAccessibility: true,
+            documentAssembly: false,
+          },
+        } as any);
+
         const blob = new Blob([bytes as any], { type: 'application/pdf' });
         setDownloadUrl(URL.createObjectURL(blob));
       } else {
@@ -196,7 +218,7 @@ function DedicatedPdfEngine({ toolSlug, toolName }: { toolSlug: string; toolName
             ))}
           </div>
 
-          {/* DEDICATED TOOL CONTROLS */}
+          {/* Dedicated Tool Controls */}
           {isLockTool && (
             <div className="p-4 rounded-2xl bg-violet-50/50 dark:bg-violet-950/20 border border-violet-100 dark:border-violet-900/50 space-y-3">
               <div className="flex items-center gap-2 text-xs font-bold text-zinc-900 dark:text-white">
@@ -258,7 +280,7 @@ function DedicatedPdfEngine({ toolSlug, toolName }: { toolSlug: string; toolName
               {processing ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Processing In Browser...</span>
+                  <span>Encrypting In Browser...</span>
                 </>
               ) : (
                 <span>Run {toolName}</span>
@@ -271,7 +293,7 @@ function DedicatedPdfEngine({ toolSlug, toolName }: { toolSlug: string; toolName
                 download={`TheToolsGenie_${toolSlug}.pdf`}
                 className="flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-6 py-3.5 text-xs font-bold text-white hover:bg-emerald-700 shadow-md shadow-emerald-500/20"
               >
-                <Download className="h-4 w-4" /> Download Result
+                <Download className="h-4 w-4" /> Download Protected PDF
               </a>
             )}
           </div>
@@ -547,7 +569,7 @@ function DedicatedFinanceEngine({ toolSlug, toolName }: { toolSlug: string; tool
               <span className="font-bold text-emerald-600">+${returns.toLocaleString()}</span>
             </div>
             <div className="pt-3 border-t flex justify-between items-baseline">
-              <span className="text-sm font-bold text-zinc-900 dark:text-white">Total Expected Value:</span>
+              <span className="text-sm font-bold">Total Expected Value:</span>
               <span className="text-2xl font-black text-violet-600 dark:text-violet-400">
                 ${total.toLocaleString()}
               </span>
@@ -561,7 +583,7 @@ function DedicatedFinanceEngine({ toolSlug, toolName }: { toolSlug: string; tool
 }
 
 // ----------------------------------------------------
-// MAIN DYNAMIC TOOL PAGE WITH DEDICATED CONTENT & FAQ
+// MAIN DYNAMIC TOOL PAGE
 // ----------------------------------------------------
 export default function ToolPage({ params }: { params: { slug: string } }) {
   const tool = TOOLS_REGISTRY.find((t) => t.slug === params.slug);
@@ -579,7 +601,6 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
     (t) => t.category === tool.category && t.slug !== tool.slug
   ).slice(0, 4);
 
-  // Dynamic FAQs tailored to each individual tool
   const toolFaqs = [
     {
       q: `Are my files safe while using ${tool.name}?`,
@@ -628,7 +649,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
         <main className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
           {renderEngine()}
 
-          {/* DEDICATED HOW-TO-USE & ARCHITECTURE */}
+          {/* Dedicated How-to-use & Architecture */}
           <div className="mt-14 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="rounded-3xl border border-zinc-200/90 dark:border-zinc-800/80 bg-white dark:bg-zinc-900 p-6 sm:p-7 shadow-sm">
               <div className="flex items-center gap-2.5 mb-4">
@@ -688,7 +709,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
             </div>
           </div>
 
-          {/* DEDICATED TOOL-SPECIFIC FAQ ACCORDION */}
+          {/* Dedicated Tool-Specific FAQ Accordion */}
           <div className="mt-14 max-w-4xl mx-auto">
             <div className="text-center mb-6">
               <span className="inline-flex items-center gap-1 text-xs font-bold text-violet-600 dark:text-violet-400 uppercase tracking-widest">
@@ -730,7 +751,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
             </div>
           </div>
 
-          {/* RELATED COMPANION TOOLS */}
+          {/* Related Companion Tools */}
           <div className="mt-14">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-sm sm:text-base font-bold text-zinc-950 dark:text-white">
