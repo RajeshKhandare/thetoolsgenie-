@@ -19,7 +19,31 @@ import {
   Zap,
   Lock,
   Cpu,
+  MousePointerClick,
+  Sparkles,
+  ChevronDown,
+  HelpCircle,
+  Layers,
 } from 'lucide-react';
+
+const FAQ_ITEMS = [
+  {
+    q: 'Are my uploaded files, photos, or documents safe on TheToolsGenie?',
+    a: 'Yes, 100%. TheToolsGenie operates purely on client-side memory using HTML5 Canvas, WebAssembly, and local JavaScript workers. Your files never get uploaded to any external server or stored in the cloud.',
+  },
+  {
+    q: 'Are there any hidden costs, credits, or file-size subscriptions?',
+    a: 'None at all. All 80+ tools across PDF, Image, Code, and Finance categories are completely unrestricted, free forever, and require no account registration or payment details.',
+  },
+  {
+    q: 'Can I use these developer and utility tools on mobile devices?',
+    a: 'Absolutely. Every tool is optimized with responsive mobile viewports and lightweight execution, allowing you to compress, convert, or calculate directly on your smartphone browser.',
+  },
+  {
+    q: 'Why are operations faster here compared to other online utility suites?',
+    a: 'Traditional platforms require sending multi-megabyte files over the internet to a server queue and waiting for processing. We eliminate network overhead by executing the code directly on your device CPU and RAM.',
+  },
+];
 
 function HomeContent() {
   const searchParams = useSearchParams();
@@ -27,6 +51,7 @@ function HomeContent() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   // Sync category state and scroll cleanly below the sticky navbar
   useEffect(() => {
@@ -40,7 +65,7 @@ function HomeContent() {
         setTimeout(() => {
           const el = document.getElementById('tools');
           if (el) {
-            const yOffset = -88; // Accounts for sticky navbar height + padding
+            const yOffset = -88;
             const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
             window.scrollTo({ top: y, behavior: 'smooth' });
           }
@@ -64,7 +89,6 @@ function HomeContent() {
     });
   }, [searchQuery, selectedCategory]);
 
-  // Show full category items when filtered; limit to top 12 on default landing
   const displayedTools = useMemo(() => {
     if (searchQuery.trim().length > 0 || selectedCategory !== 'All') return filteredTools;
     return filteredTools.slice(0, 12);
@@ -89,7 +113,11 @@ function HomeContent() {
         <Navbar />
 
         {/* Hero Section */}
-        <section className="mx-auto max-w-5xl px-4 pt-8 sm:pt-12 pb-6 text-center">
+        <section className="mx-auto max-w-5xl px-4 pt-8 sm:pt-14 pb-6 text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 dark:border-violet-900/60 bg-violet-50 dark:bg-violet-950/40 px-3.5 py-1 text-[11px] font-bold text-violet-700 dark:text-violet-300 mb-6 shadow-sm">
+            <Sparkles className="h-3.5 w-3.5" /> High-Performance Browser Utilities
+          </div>
+          
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-[-0.03em] text-zinc-950 dark:text-white max-w-4xl mx-auto leading-[1.14]">
             All the Free Online Tools{' '}
             <span className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 dark:from-violet-400 dark:via-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
@@ -97,29 +125,29 @@ function HomeContent() {
             </span>
           </h1>
 
-          <p className="mt-3 text-xs sm:text-sm md:text-base font-normal text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed tracking-normal">
-            Simple, fast, and completely free utilities for PDF, images, code, and financial calculations.
+          <p className="mt-4 text-xs sm:text-sm md:text-base font-normal text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed tracking-normal">
+            Fast, secure, and client-side utilities for PDF documents, graphic transformations, code sandboxes, and financial planning.
           </p>
 
           {/* Search Box */}
-          <div className="mt-6 max-w-xl mx-auto flex items-center gap-2">
+          <div className="mt-8 max-w-xl mx-auto flex items-center gap-2">
             <div className="relative flex-1 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm">
-              <Search className="absolute left-4 top-3 h-4 w-4 text-zinc-400" />
+              <Search className="absolute left-4 top-3.5 h-4 w-4 text-zinc-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search tools (e.g. compress image, python, sip)..."
-                className="w-full bg-transparent py-2.5 pl-11 pr-4 text-xs focus:outline-none text-zinc-900 dark:text-white placeholder:text-zinc-400"
+                className="w-full bg-transparent py-3 pl-11 pr-4 text-xs focus:outline-none text-zinc-900 dark:text-white placeholder:text-zinc-400"
               />
             </div>
-            <button className="rounded-2xl bg-violet-600 px-6 py-2.5 text-xs font-bold text-white hover:bg-violet-700 transition-colors shadow-md shadow-violet-500/20">
+            <button className="rounded-2xl bg-violet-600 px-6 py-3 text-xs font-bold text-white hover:bg-violet-700 transition-colors shadow-md shadow-violet-500/20">
               Search
             </button>
           </div>
         </section>
 
-        {/* Category Filter Pills & Tools Section */}
+        {/* Category Filter Pills & Tools Grid */}
         <section id="tools" className="mx-auto max-w-7xl px-4 sm:px-6 pt-6 scroll-mt-24">
           <div className="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-4 no-scrollbar">
             {CATEGORIES.map((category) => {
@@ -140,14 +168,12 @@ function HomeContent() {
             })}
           </div>
 
-          {/* Active Category Heading & Counter */}
           <div className="mt-4 mb-2 flex items-center justify-between">
             <p className="text-xs font-bold uppercase tracking-wider text-zinc-400">
               Showing {displayedTools.length} {selectedCategory === 'All' ? 'Popular' : selectedCategory} Utilities
             </p>
           </div>
 
-          {/* Tools Grid */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {displayedTools.map((tool: ToolMeta) => (
               <Link
@@ -176,7 +202,6 @@ function HomeContent() {
             ))}
           </div>
 
-          {/* "Explore All Tools" Button */}
           {searchQuery.trim().length === 0 && selectedCategory === 'All' && (
             <div className="mt-10 text-center">
               <Link
@@ -190,8 +215,71 @@ function HomeContent() {
           )}
         </section>
 
-        {/* Performance & Privacy Architecture Section */}
-        <section className="mx-auto max-w-7xl px-4 sm:px-6 mt-20 mb-16">
+        {/* ========================================================
+            SECTION 1: How It Works (Visual Process Illustration)
+            ======================================================== */}
+        <section className="mx-auto max-w-7xl px-4 sm:px-6 mt-24">
+          <div className="text-center max-w-xl mx-auto mb-12">
+            <span className="text-xs font-bold text-violet-600 dark:text-violet-400 uppercase tracking-widest">
+              Frictionless Workflow
+            </span>
+            <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
+              Three Steps. Zero Waiting Time.
+            </h2>
+            <p className="mt-2 text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
+              No account creation, no subscription cards, and no server roundtrips.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+            {/* Step 1 */}
+            <div className="relative rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 p-8 shadow-sm">
+              <div className="flex items-center justify-between mb-6">
+                <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-600/10 text-violet-600 dark:text-violet-400 font-black text-sm">
+                  01
+                </span>
+                <MousePointerClick className="h-5 w-5 text-zinc-400" />
+              </div>
+              <h3 className="text-base font-bold text-zinc-950 dark:text-white">Select Any Utility</h3>
+              <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                Pick from our library of 80+ specialized tools across PDF manipulation, raster graphics, code compilers, or calculators.
+              </p>
+            </div>
+
+            {/* Step 2 */}
+            <div className="relative rounded-3xl border border-violet-200 dark:border-violet-900/80 bg-violet-50/40 dark:bg-violet-950/20 p-8 shadow-sm">
+              <div className="flex items-center justify-between mb-6">
+                <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-600 text-white font-black text-sm shadow-md shadow-violet-500/20">
+                  02
+                </span>
+                <Cpu className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+              </div>
+              <h3 className="text-base font-bold text-zinc-950 dark:text-white">Direct Local Execution</h3>
+              <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                Drop your assets into the canvas. Processing runs purely inside your browser memory with zero data transferred outside your machine.
+              </p>
+            </div>
+
+            {/* Step 3 */}
+            <div className="relative rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 p-8 shadow-sm">
+              <div className="flex items-center justify-between mb-6">
+                <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-600/10 text-emerald-600 dark:text-emerald-400 font-black text-sm">
+                  03
+                </span>
+                <Zap className="h-5 w-5 text-emerald-500" />
+              </div>
+              <h3 className="text-base font-bold text-zinc-950 dark:text-white">Instant Export</h3>
+              <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                Download your output or inspect interactive results immediately without watermark obstructions or artificial waiting locks.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================
+            SECTION 2: Client Architecture & Privacy Badges
+            ======================================================== */}
+        <section className="mx-auto max-w-7xl px-4 sm:px-6 mt-20">
           <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800/80 bg-gradient-to-b from-white to-zinc-50/50 dark:from-zinc-900 dark:to-zinc-950/50 p-8 sm:p-12 shadow-sm">
             
             <div className="max-w-2xl mx-auto text-center">
@@ -265,6 +353,89 @@ function HomeContent() {
 
           </div>
         </section>
+
+        {/* ========================================================
+            SECTION 3: FAQ Accordion (AdSense Rich Content Guard)
+            ======================================================== */}
+        <section className="mx-auto max-w-4xl px-4 sm:px-6 mt-20">
+          <div className="text-center mb-10">
+            <span className="inline-flex items-center gap-1 text-xs font-bold text-violet-600 dark:text-violet-400 uppercase tracking-widest">
+              <HelpCircle className="h-3.5 w-3.5" /> Common Questions
+            </span>
+            <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white">
+              Frequently Asked Questions
+            </h2>
+          </div>
+
+          <div className="space-y-3">
+            {FAQ_ITEMS.map((item, idx) => {
+              const isOpen = openFaq === idx;
+              return (
+                <div
+                  key={idx}
+                  className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden transition-all shadow-sm"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : idx)}
+                    className="flex w-full items-center justify-between p-5 text-left text-xs sm:text-sm font-bold text-zinc-900 dark:text-white hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+                  >
+                    <span>{item.q}</span>
+                    <ChevronDown
+                      className={`h-4 w-4 shrink-0 text-zinc-400 transition-transform duration-200 ${
+                        isOpen ? 'rotate-180 text-violet-600' : ''
+                      }`}
+                    />
+                  </button>
+                  {isOpen && (
+                    <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-800/60">
+                      {item.a}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ========================================================
+            SECTION 4: SaaS Bottom CTA Banner
+            ======================================================== */}
+        <section className="mx-auto max-w-7xl px-4 sm:px-6 mt-20 mb-20">
+          <div className="relative overflow-hidden rounded-3xl bg-zinc-950 px-8 py-12 sm:px-16 sm:py-16 text-center text-white border border-zinc-800 shadow-2xl">
+            {/* Ambient Background Glow */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-violet-600/20 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="relative z-10 max-w-2xl mx-auto">
+              <Layers className="h-10 w-10 text-violet-400 mx-auto mb-4" />
+              <h2 className="text-2xl sm:text-4xl font-black tracking-tight">
+                Ready to Boost Your Digital Productivity?
+              </h2>
+              <p className="mt-3 text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                Join creators, software engineers, and digital agencies using TheToolsGenie every day for clean, zero-trace file workflows.
+              </p>
+              <div className="mt-8 flex flex-wrap justify-center gap-3">
+                <Link
+                  href="/tools"
+                  className="rounded-2xl bg-violet-600 px-7 py-3 text-xs font-bold text-white hover:bg-violet-500 transition-all shadow-lg shadow-violet-600/30 hover:scale-105"
+                >
+                  Explore All 80+ Utilities
+                </Link>
+                <a
+                  href="#tools"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById('tools')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="rounded-2xl border border-zinc-800 bg-zinc-900 px-7 py-3 text-xs font-bold text-zinc-300 hover:text-white hover:border-zinc-700 transition-all"
+                >
+                  Pick a Tool
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
       </div>
 
       <Footer />
